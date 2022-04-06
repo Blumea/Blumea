@@ -54,7 +54,7 @@ class bloomFilterBasic{
     }
     
     
-    add(element){
+    insert(element){
         let digests = []
         for(let i=0;i<this.hash_count;++i){
             let index = murmurhash.v3(element,i) % this.size
@@ -65,7 +65,7 @@ class bloomFilterBasic{
         console.info(`[*] ${element} added.`)
     }
 
-    lookup(element){
+    find(element){
         for(let i=0;i<this.hash_count;i++){
             let index = Math.ceil(murmurhash.v3(element,i) % this.size)
             if(this.bit_set[index] == 0 )
