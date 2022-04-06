@@ -1,0 +1,25 @@
+{
+  "name": "blumea",
+  "version": "0.0.1",
+  "description": "Blumea is an easy to plug Bloom filter solution for your applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blumea/Blumea-npm-package.git"
+  },
+  "keywords": [
+    "Blumea"
+  ],
+  "author": "akash.c1500@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Blumea/Blumea-npm-package/issues"
+  },
+  "homepage": "https://github.com/Blumea/Blumea-npm-package#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  }
+}
