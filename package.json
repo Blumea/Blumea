@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Blumea/Blumea-npm-package#readme",
   "dependencies": {
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "murmurhash": "^2.0.0"
   }
 }
