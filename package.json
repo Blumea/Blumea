@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/Blumea/Blumea.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "keywords": [
     "Blumea",
     "bloom-filter"
@@ -17,7 +20,8 @@
   "author": "akash.c1500@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Blumea/Blumea/issues"
+    "url": "https://github.com/Blumea/Blumea/issues",
+    "email": "akash.c1500@gmail.com"
   },
   "homepage": "https://github.com/Blumea/Blumea#readme",
   "dependencies": {
