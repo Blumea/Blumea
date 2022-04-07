@@ -1,6 +1,6 @@
 {
   "name": "blumea",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Blumea is an easy to plug Bloom filter solution for your applications.",
   "main": "index.js",
   "scripts": {
