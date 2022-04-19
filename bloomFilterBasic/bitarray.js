@@ -1,9 +1,11 @@
-// Utility methods to create & manipulate the bit array.
-/******** Discarded Bit Array Implementation. Need Corrected implementations. ********
-* buildVector()
-* setBit()
-* getBit()
-*/  
+/*******************************************
+ * copyright: @github.com/Blumea  
+ * authors: @akashchouhan16
+ * *****************************************
+*/
+
+/* Discarded Bit Array Implementation for v1.0.x Need Corrected implementations. */  
+
 buildVector = (bitCount)=> {
   let bits_per_element = 32
   let elementCount = Math.ceil(bitCount / bits_per_element)
@@ -14,6 +16,7 @@ buildVector = (bitCount)=> {
   }
   return bet_vector
 }
+// Utility methods to create & manipulate the bit array.
 const setBit = (bit_vector, index)=>{
   return bit_vector | (1 << index)
 }
