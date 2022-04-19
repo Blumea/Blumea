@@ -1,6 +1,6 @@
 {
   "name": "blumea",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Blumea is an easy to plug Bloom filter solution for your applications.",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Blumea/Blumea#readme",
   "dependencies": {
     "dotenv": "^16.0.0",
-    "murmurhash": "^2.0.0"
+    "murmurhash": "^2.0.0",
+    "terminal-styles": "^1.0.0"
   }
 }
