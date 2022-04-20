@@ -60,12 +60,12 @@ class bloomFilterBasic{
         for(let i=0;i<this.hash_count;i++){
             let index = Math.ceil(murmurhash.v3(element,i) % this.size)
             if(this.bit_set[index] == 0 ){
-                if(this.logger)
-                    console.log(styles `${blackBright}${bold}[*]Element Already exists. ${x}${x}`)
                 return false
             }
         }
-     return true
+        if(this.logger)
+            console.log(styles `${blackBright}${bold}[*]Element Already exists. ${x}${x}`)
+        return true
     }
 
     // secondary utility methods to access or update the bloom filter parameters.
