@@ -1,4 +1,6 @@
 const murmurhash = require('murmurhash')
+const isLogsActive = require('../logger')
+
 
 class bloomFilterPartitioned {
     getSize() {
@@ -13,6 +15,7 @@ class bloomFilterPartitioned {
         return k
     }
     constructor(items_count, false_positive) {
+        this.logger = isLogsActive()
         this.items_count = items_count;
         this.false_positive = false_positive;
 
