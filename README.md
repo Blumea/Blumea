@@ -64,9 +64,28 @@ OR
 
 > **Note:** updateX methods() are experimental. Classical Bloom filters have static false positive rate and item count for a single instance.
 
-#### Usage Warning:
+#### ❗Usage Warning:
 * The false positive rate must not exceed **1.0**. An exception will be thrown if this value is exceeded.
 * Valid Range: **0.01 to 0.99**
+
+* **Sample Code Snipet**:
+  ```javascript
+    const {bloomFilterBasic} = require('blumea')
+    let filter = new bloomFilterBasic(20,0.03)
+
+
+    filter.insert('James Clear')
+    filter.insert('Paulo Coelho')
+
+    console.log(filter.find('blumea')) //return false.
+    console.log(filter.find('Paulo Coelho')) //return true.
+
+    console.log(filter.getHashFunctionCount()) //return the optimal hash func count.
+
+    filter.updateFalsePositiveRate(0.0) //warning thrown and filter will update the rate to 0.01.
+    filter.updateItemCount(50) //updates the item count & recompute parameters.
+    console.log(filter.getHashFunctionCount()) //return the new optimal hash func count.
+  ```
 ---
 ## 📗Platform Support
 
