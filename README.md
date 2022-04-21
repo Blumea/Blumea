@@ -2,8 +2,8 @@
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-8ebb9c.svg)](https://github.com/Blumea/Blumea "Repo Maintained")
 [![Ask Us Anything !](https://img.shields.io/badge/Ask%20Us-Anything-1abc9c.svg)](https://github.com/Blumea "[github.com/Hack-Repository](https://github.com/Blumea)")
-[![made-for-Developers](https://img.shields.io/badge/Made%20for-Developers-426658.svg)](https://github.com/Hack-Repository/POTD-GoogleChromeExtension "POTD")
-[![GitHub issues](https://img.shields.io/github/issues/Hack-Repository/POTD-GoogleChromeExtension.svg)](https://github.com/Hack-Repository/POTD-GoogleChromeExtension/issues)
+[![made-for-Developers](https://img.shields.io/badge/Made%20for-Developers-426658.svg)](https://github.com/Blumea/Blumea "Blumea")
+[![GitHub issues](https://img.shields.io/github/issues/Blumea/Blumea.svg)](https://github.com/Blumea/Blumea/issues)
 
 ### Blumea is an easy to plug Bloom filter solution for your applications.
 
