@@ -25,10 +25,9 @@ class bloomFilterBasic{
     // Bloom filter instance initialization:
     constructor(items_count, false_positive) {
         this.logger = isLogsActive()
-        console.log(this.logger)
         this.items_count = items_count;
         // Prevent invalid false positive rate inputs:
-        if(false_positive<=0.0){
+        if(false_positive<=0.0 || false_positive>=0.999){
             false_positive = 0.01; //set to lowest permitted value.
             if(this.logger)
                 console.log(styles `${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
@@ -64,7 +63,7 @@ class bloomFilterBasic{
             }
         }
         if(this.logger)
-            console.log(styles `${blackBright}${bold}[*]Element Already exists. ${x}${x}`)
+            console.log(styles `${blackBright}${bold}[*]Element exists. ${x}${x}`)
         return true
     }
 
@@ -82,7 +81,7 @@ class bloomFilterBasic{
     }
 
     updateFalsePositiveRate(newFalsePostive){
-        if(newFalsePostive<=0.0){
+        if(newFalsePostive<=0.0 || newFalsePostive>=0.999){
             if(this.logger)
                 console.log(styles `${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
             newFalsePostive = 0.01;
