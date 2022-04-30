@@ -8,7 +8,9 @@ const version = require('./package.json').version
 
 const bloomFilterBasic = require('./bloomFilterBasic/main')
 const {buildVector, setBit, getBit} = require('./bloomFilterBasic/bitarray')
+
+const bloomFilterPartitioned = require('./bloomFilterPartitioned/main')
 const bitArray = {buildVector, setBit, getBit}
 
 
-module.exports = {bloomFilterBasic, bitArray}
+module.exports = {bloomFilterBasic, bloomFilterPartitioned, bitArray}
