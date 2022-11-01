@@ -2,15 +2,19 @@
  * copyright: @github.com/Blumea  
  * authors: @akashchouhan16 @singhtaran1005
  * *****************************************
-*/ 
+*/
 require('dotenv').config()
 const version = require('./package.json').version
 
-const bloomFilterBasic = require('./bloomFilterBasic/main')
-const {buildVector, setBit, getBit} = require('./bloomFilterBasic/bitarray')
+const BloomFilter = require('./bloomFilterBasic/main')
 
-const bloomFilterPartitioned = require('./bloomFilterPartitioned/main')
-const bitArray = {buildVector, setBit, getBit}
+const PartitionedBloomFilter = require('./bloomFilterPartitioned/main')
 
+const CountingBloomFilter = require('./bloomFilterCounting/main')
 
-module.exports = {bloomFilterBasic, bloomFilterPartitioned, bitArray}
+const CuckooBloomFilter = require('./bloomFilterCuckoo/main')
+
+const { buildVector, setBit, getBit } = require('./bloomFilterBasic/bitarray')
+const bitArray = { buildVector, setBit, getBit }
+
+module.exports = { BloomFilter, PartitionedBloomFilter, CountingBloomFilter, CuckooBloomFilter, bitArray }

@@ -4,7 +4,7 @@ const isLogsActive = require('../logger')
 const styles = require('terminal-styles')
 const { cyan, x, red, bold, blackBright } = styles
 
-class bloomFilterPartitioned {
+class PartitionedBloomFilter {
 
     // number of bits in bloom filter
     getSize() {
@@ -65,4 +65,4 @@ class bloomFilterPartitioned {
 /*******************
  *  © Blumea | 2022
  * *****************/
-module.exports = bloomFilterPartitioned
+module.exports = PartitionedBloomFilter;
