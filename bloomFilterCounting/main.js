@@ -10,9 +10,8 @@ const styles = require('terminal-styles')
 const { cyan, x, red, bold, blackBright } = styles
 
 
-class BloomFilter {
+class CountingBloomFilter {
 
-    // Classical Bloom Formulae, Utility methods.
     getSize() {
         let m = -(this.items_count * Math.log(this.false_positive)) / (Math.log(2) ** 2)
         return Math.ceil(m);
@@ -108,4 +107,4 @@ class BloomFilter {
 /*******************
  *  © Blumea | 2022
  * *****************/
-module.exports = BloomFilter
+module.exports = CountingBloomFilter;

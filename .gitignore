@@ -5,6 +5,10 @@ jspm_packages/
 # Optional npm cache directory
 .npm
 
+# Manual Testing dir
+Tests/
+*.test.*
+
 # Lock files
 *lock*
 
