@@ -11,7 +11,7 @@
 
 
 
-## 🔖About
+## 🔖About Blumea
 A Bloom filter is a space-efficient probabilistic data structure for determining whether or not an element belongs to a set. Checking the availability of a username, for example, is a set membership problem, with the set being a list of all registered usernames. The cost of efficiency is that it is probabilistic in nature, which implies that some False Positive findings may occur. False positive means that it may indicate that a certain username is already taken when it is not.
 
 ## 📝Installation
