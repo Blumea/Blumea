@@ -48,9 +48,9 @@ OR
 #### **Imports:**
 * ```javascript
     //import the the class from blumea package
-    const {bloomFilterBasic} = require('blumea');
+    const {BloomFilter} = require('blumea');
     //create a filter instance with itemCount && falsePositive rate.
-    let filter = new bloomFilterBasic(799,0.02)
+    let filter = new BloomFilter(799,0.02)
   ```
 #### **Public Access Methods:**
 * **insert(element)** : To add the element to the bloom filter instance.
@@ -66,12 +66,12 @@ OR
 
 #### ❗Usage Warning:
 * The false positive rate must not exceed **1.0**. An exception will be thrown if this value is exceeded.
-* Valid Range: **0.01 to 0.99**
+* Valid Range: **0.001 to 0.999**
 
 * **Sample Code Snipet**:
   ```javascript
-    const {bloomFilterBasic} = require('blumea')
-    let filter = new bloomFilterBasic(20,0.03)
+    const {BloomFilter} = require('blumea')
+    let filter = new BloomFilter(20,0.03)
 
 
     filter.insert('James Clear')
