@@ -35,29 +35,35 @@ class CountingBloomFilter {
         this.false_positive = false_positive;
         this.size = this.getSize(this.item_count, this.false_positive)
         this.hash_count = this.getHashCount(this.size, this.items_count)
-        this.bit_set = []
+        this.bit_set = [] //Array of Object
 
         for (let i = 0; i < this.size; i++)
-            this.bit_set[i] = 0
+            this.bit_set[i] = {
+                count_bit: 0, //count bit for specific element
+                values: []
+            }
     }
 
     // Primary Method definitions:
     insert(element) {
+        let element_count = 0;
         let digests = []
         for (let i = 0; i < this.hash_count; ++i) {
             let index = murmurhash.v3(element, i) % this.size
             digests.push(index)
-            this.bit_set[index] = 1;
+            this.bit_set[index].count_bit += 1; //count bit
+            this.bit_set[index].values.push(element);
+            element_count = this.bit_set[index].count_bit;
         }
         if (this.logger) {
-            console.log(styles`${cyan}${bold}[*]New Element Inserted ${x}${red}=> ${x}${x}` + element)
+            console.log(styles`${cyan}${bold}[*]Element Inserted ${x}${red}=> ${x}${x}` + element + `(count = ${element_count})`)
         }
     }
 
     find(element) {
         for (let i = 0; i < this.hash_count; i++) {
             let index = Math.ceil(murmurhash.v3(element, i) % this.size)
-            if (this.bit_set[index] == 0) {
+            if (this.bit_set[index] === {} || this.bit_set[index] === undefined || this.bit_set[index].count_bit == 0) {
                 return false
             }
         }
@@ -65,6 +71,7 @@ class CountingBloomFilter {
             console.log(styles`${blackBright}${bold}[*]Element exists. ${x}${x}`)
         return true
     }
+
 
     // secondary utility methods to access or update the bloom filter parameters.
     updateItemCount(newItemCount) {
