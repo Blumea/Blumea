@@ -4,7 +4,8 @@
  * *****************************************
 */
 require('dotenv').config()
-const version = require('./package.json').version
+require('./logger/logger').displayLoggerDetails();
+
 
 const BloomFilter = require('./bloomFilterBasic/main')
 

@@ -1,5 +1,5 @@
 const murmurhash = require('murmurhash')
-const isLogsActive = require('../logger')
+const { isLogsActive } = require('../logger/logger')
 
 const styles = require('terminal-styles')
 const { cyan, x, red, bold, blackBright } = styles
@@ -20,7 +20,7 @@ class PartitionedBloomFilter {
         return Math.ceil(k)
     }
     constructor(items_count, false_positive) {
-        this.logger = isLogsActive()
+        this.logger = isLogsActive();
         this.items_count = items_count;
         this.false_positive = false_positive;
         // this.
