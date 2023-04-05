@@ -4,7 +4,7 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const isLogsActive = require('../logger')
+const { isLogsActive } = require('../logger/logger')
 
 const styles = require('terminal-styles')
 const { cyan, x, red, bold, blackBright } = styles
@@ -24,7 +24,7 @@ class BloomFilter {
 
     // Bloom filter instance initialization:
     constructor(items_count, false_positive) {
-        this.logger = isLogsActive()
+        this.logger = isLogsActive();
         this.items_count = items_count;
         // Prevent invalid false positive rate inputs:
         if (false_positive <= 0.0 || false_positive >= 0.999 || false_positive < 0.0001) {
