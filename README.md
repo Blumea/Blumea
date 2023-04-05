@@ -1,4 +1,4 @@
-![Blumea](./assets/blumeabanner_static.png)
+![blumeabanner_static](https://user-images.githubusercontent.com/56465610/215418750-3eb64619-5a69-48d1-949f-2af3c492a5d4.png)
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-8ebb9c.svg)](https://github.com/Blumea/Blumea "Repo Maintained")
 [![Ask Us Anything !](https://img.shields.io/badge/Ask%20Us-Anything-1abc9c.svg)](https://github.com/Blumea "[github.com/Hack-Repository](https://github.com/Blumea)")
