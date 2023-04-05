@@ -12,7 +12,7 @@ let logActiveDisplayed = false;
 let logInactiveDisplayed = false;
 
 const displayLoggerDetails = () => {
-    log('\n' + styles`${styles.bold}${styles.greenBright}[*] Using Blumea ${styles.x}${styles.x}` + 'v' + version + styles`${styles.bold}${styles.greenBright} with the current app${styles.x}${styles.x}`)
+    log('\n' + styles`${styles.bold}${styles.blackBright}[*] Using Blumea ${styles.x}${styles.x}` + 'v' + version + styles`${styles.bold}${styles.blackBright} with the current app${styles.x}${styles.x}`)
 }
 
 const displayLogActive = () => {
