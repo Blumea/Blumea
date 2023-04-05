@@ -5,54 +5,80 @@
 [![made-for-Developers](https://img.shields.io/badge/Made%20for-Developers-426658.svg)](https://github.com/Blumea/Blumea "Blumea")
 [![GitHub issues](https://img.shields.io/github/issues/Blumea/Blumea.svg)](https://github.com/Blumea/Blumea/issues)
 
-### Blumea is an easy to plug Bloom filter solution for your applications.
 
-#### **[Visit Blumea](https://blumea-frontend.pages.dev/ "Blumea Web App")** for product demo and documentations.
+# Blumea
+Blumea is a simple and efficient Bloom filter implementation for your applications. It's designed to help you determine whether an element belongs to a set in a space-efficient way.
 
+## 🔖 About Bloom Filters
+A Bloom filter is a probabilistic data structure that allows you to test if an element is in a set. It does so by using a bit array and multiple hash functions to check if a given element is likely to be in the set or not. This makes Bloom filters ideal for use cases where space is at a premium, or when you need to test for set membership quickly.
 
+One common example of where Bloom filters are useful is in checking the availability of usernames. Here, the set is the list of all registered usernames, and Bloom filters can be used to determine if a new username is already taken. The downside of Bloom filters is that they are probabilistic in nature and can sometimes give false positives (indicating that an element is in the set when it isn't).
 
-## 🔖About Blumea
-A Bloom filter is a space-efficient probabilistic data structure for determining whether or not an element belongs to a set. Checking the availability of a username, for example, is a set membership problem, with the set being a list of all registered usernames. The cost of efficiency is that it is probabilistic in nature, which implies that some False Positive findings may occur. False positive means that it may indicate that a certain username is already taken when it is not.
+---
 
-## 📝Installation
-* ```
+## 📝 Installation
+* You can install Blumea via npm by running:
+  ```
   npm i blumea
   ```
-OR
-* ```
-   npm install blumea --save
+* Alternatively, you can save the latest dependency by running:
+  ```
+   npm i blumea@latest --save
   ```
 ---
-## Usage
-* Require the **Blumea** module into your javascript/typescript application.
+
+## 📗 Usage
+To start using Blumea in your JavaScript or TypeScript project, you need to first import it. This can be done using either of the following methods:
+* **ES5** import could be done as follows:
   ```javascript
     const blumea = require('blumea')
-    OR
-    const {/*specific bloom filter option*/} = require('blumea')
-  ```
-* Once imported, **Blumea** can now be used to create and access various bloom filter options.
 
-* Blumea comes with a **console logger** to monitor the basic logs while using the filter.
-* To enable the logger, use the **`-l`** or **`-log`** or **`-blumea`** flag while running your JS/TS or Node.js application
-* Using a JS/TS application:
+    // import one or more bloom filters
+    const { BloomFilter } = require('blumea')
   ```
-  node application.js -log
+* Alternatively, for **ES6** or later versions:
+  ```javascript
+    import * as blumea from 'blumea'
+
+    //// import one or more bloom filters
+    import { BloomFilter } from 'blumea'
+
   ```
-* Using Node.js server with nodemon:
-  ```
-  nodemon server.js -l
-  ```
+* After importing Blumea into your project, you can create and access different bloom filter options.
+* Blumea includes a logger module to monitor basic logs while using the filter. 
+* To enable the logger, use one of the following flags while running your JavaScript/TypeScript or Node.js application: **`-l`, `-log`, or `-blumea`**.
+  * Here are examples of how to enable the logger:
+    ```
+      node application.js -blumea
+    ```
+  * Alternatively, applications with start scripts could use:
+    ```
+      npm run <app-script> -log
+    ```
+
 ---
-## Data Structures
-### 🔖**Classical Bloom Filter**
-#### **Imports:**
-* ```javascript
-    //import the the class from blumea package
-    const {BloomFilter} = require('blumea');
-    //create a filter instance with itemCount && falsePositive rate.
-    let filter = new BloomFilter(799,0.02)
+
+## 🏗️ Data Structures
+### 1. 🔖**Classical Bloom Filter**
+
+#### **About**
+Classical Bloom Filters are an extension of Bloom Filters that use a bit array and hash functions to represent the membership of an element in a set. They are probabilistic data structures used for membership testing with applications in web caching, spell checkers, virus scanners, Content Delivery Networks (CDN) and network routers.
+#### **How to import?**
+To import the BloomFilter class from the Blumea package into your project, use the following:
+  ```javascript
+    const { BloomFilter } = require('blumea');
+
+    /**
+     * Create a Bloom filter instance for your app.
+     * Provide item count and an acceptable false positive rate.
+     */ 
+
+    let filter = new BloomFilter(9700, 0.01);
   ```
-#### **Public Access Methods:**
+By passing the desired item count and false positive rate as arguments to the BloomFilter constructor, you can create a Bloom filter instance with the appropriate settings for your use case.
+
+
+#### **Methods:**
 * **insert(element)** : To add the element to the bloom filter instance.
 * **find(element)**: To check for element membership with the false positive rate of the **filter**.
 * **updateFalsePositiveRate(newFalsePostive)**: To update the filter instance with a new false positive rate.
@@ -62,13 +88,14 @@ OR
   * **getHashFunctionCount()** or `filter.hash_count`
   * **getBitArraySize()** or `filter.size`
 
-> **Note:** updateX methods() are experimental. Classical Bloom filters have static false positive rate and item count for a single instance.
+  > **Note:** updateX methods() are experimental. Classical Bloom filters have static false positive rate and item count for a single instance.
 
 #### ❗Usage Warning:
-* The false positive rate must not exceed **1.0**. An exception will be thrown if this value is exceeded.
-* Valid Range: **0.001 to 0.999**
+- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
 
-* **Sample Code Snipet**:
+- The valid range for false positive rates is between 0.001 and 0.999.
+
+**Sample Code Snipet**:
   ```javascript
     const {BloomFilter} = require('blumea')
     let filter = new BloomFilter(20,0.03)
@@ -86,6 +113,7 @@ OR
     filter.updateItemCount(50) //updates the item count & recompute parameters.
     console.log(filter.getHashFunctionCount()) //return the new optimal hash func count.
   ```
+---
 
 ### 🔖**Counting Bloom Filter**
 #### **Imports:**
