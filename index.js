@@ -7,15 +7,15 @@ require('dotenv').config()
 require('./logger/logger').displayLoggerDetails();
 
 
-const BloomFilter = require('./bloomFilterBasic/main')
+const BloomFilter = require('./classicalBloom/main')
 
-const PartitionedBloomFilter = require('./bloomFilterPartitioned/main')
+const PartitionedBloomFilter = require('./partitionedBloom/main')
 
-const CountingBloomFilter = require('./bloomFilterCounting/main')
+const CountingBloomFilter = require('./countingBloom/main')
 
-const CuckooBloomFilter = require('./bloomFilterCuckoo/main')
+const CuckooBloomFilter = require('./cuckooBloom/main')
 
-const { buildVector, setBit, getBit } = require('./bloomFilterBasic/bitarray')
+const { buildVector, setBit, getBit } = require('./classicalBloom/bitarray')
 const bitArray = { buildVector, setBit, getBit }
 
 module.exports = { BloomFilter, PartitionedBloomFilter, CountingBloomFilter, CuckooBloomFilter, bitArray }
