@@ -185,20 +185,19 @@ To import the BloomFilter class from the Blumea package into your project, use t
   ```
 ---
 
----
-## 📗Platform Support
+## 🚧 Support Details
 
-* Node.js: `v7.0.0 or higher`
-* Google Chrome: `v41 or higher`
-* Mozilla Firefox: `v34 or higher`
-* Microsoft Edge: `v12 or higher`
+* Node.js: v7.0.0 or higher
+* Google Chrome: v41 or higher
+* Mozilla Firefox: v34 or higher
+* Microsoft Edge: v12 or higher
 
 ---
-## Application Information
+## 📦 Application Details
 
 ### License
 **[MIT License](https://github.com/Blumea/Blumea-npm-package/blob/main/LICENSE "View License")**
 ### Author
-**[Github.com/Blumea](https://github.com/Blumea "Open Github Organisation")**
+**[Github.com/Blumea](https://github.com/Blumea "Open Github Organization")**
 ### Maintainer
 **[Akash Chouhan](https://github.com/akashchouhan16 "akashchouhan16")**
