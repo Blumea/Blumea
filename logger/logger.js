@@ -20,6 +20,7 @@ const displayLogActive = () => {
         return;
     } else {
         logActiveDisplayed = true;
+        log(styles`\n${styles.greenBright}██████╗ ██╗     ██╗   ██╗███╗   ███╗███████╗ █████╗\n██╔══██╗██║     ██║   ██║████╗ ████║██╔════╝██╔══██╗\n██████╔╝██║     ██║   ██║██╔████╔██║█████╗  ███████║\n██╔══██╗██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██║\n██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║\n╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝${styles.x}`)
         log(styles`${styles.bold}${styles.blackBright}[*] Blumea Logger is active...${styles.x}${styles.x}`)
     }
 }
