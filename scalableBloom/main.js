@@ -13,10 +13,6 @@ const { magenta, x, red, bold, blackBright } = styles
 class ScalableBloomFilter {
     constructor(item_count, false_positive, initial_capacity = 1000, growth_factor = 2) {
         this.logger = isLogsActive();
-        this.item_count = item_count;
-        this.false_positive = false_positive;
-        this.initial_capacity = initial_capacity;
-        this.growth_factor = growth_factor;
 
         if (!item_count || Number(item_count) > 7_000_000 || item_count <= 0) {
             item_count = 10000;
@@ -45,6 +41,10 @@ class ScalableBloomFilter {
                 log(`[type: ` + styles`${magenta}${bold}Scalable Bloom beta${x}${x}, ` + `log: ` + styles`${red}${bold}Invalid growth_factor. Updated to: 2${x}${x}]`)
             }
         }
+        this.item_count = item_count;
+        this.false_positive = false_positive;
+        this.initial_capacity = initial_capacity;
+        this.growth_factor = growth_factor;
 
         this.currentFilter = new BloomFilter(item_count, false_positive, initial_capacity);
         this.filters = [this.currentFilter];
