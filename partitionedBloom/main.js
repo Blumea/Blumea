@@ -1,3 +1,8 @@
+/*******************************************
+ * copyright: @github.com/Blumea  
+ * authors: @singhtaran1005
+ * *****************************************
+*/
 const murmurhash = require('murmurhash')
 const { isLogsActive } = require('../logger/logger')
 
@@ -5,64 +10,87 @@ const styles = require('terminal-styles')
 const { cyan, x, red, bold, blackBright } = styles
 
 class PartitionedBloomFilter {
-
-    // number of bits in bloom filter
+    // Utility methods.
     getSize() {
-
-        let m = -(this.items_count * Math.log(this.false_positive)) / (Math.log(2) ** 2)
+        let m = -(this.items_count * Math.log(this.false_positive)) / (Math.log(2) ** 2);
         return Math.ceil(m);
     }
-
-    // number of hash functions
     getHashCount() {
-        // k = n * items_count
-        let k = (this.size * this.items_count)
-        return Math.ceil(k)
+        let k = (this.size / this.items_count) * Math.log(2);
+        return Math.ceil(k);
     }
-    constructor(items_count, false_positive) {
+    // Partitioned Bloom filter instance initialization:
+    constructor(items_count, false_positive, partitions_count) {
         this.logger = isLogsActive();
         this.items_count = items_count;
-        this.false_positive = false_positive;
-        // this.
         // Prevent invalid false positive rate inputs:
-        if (false_positive <= 0.0 || false_positive >= 0.999) {
-            false_positive = 0.01; //set to lowest permitted value.
-            if (this.logger)
-                console.log(styles`${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
+        if (false_positive >= 0.999 || false_positive < 0.01) {
+            false_positive = 0.01; //set to lowest safe permitted value.
+            if (this.logger) log(`[type: ` + styles`${cyan}${bold}Partitioned Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}Invalid False positive rate. Updated to: 0.01${x}${x}]`);
         }
-        this.size = this.getSize()
-        this.hash_count = this.getHashCount(this.size, this.items_count)
-        this.size = this.size / (this.hash_count)
-        this.bit_set = []
-        for (let i = 0; i < this.size; i++)
-            this.bit_set[i] = 0
-    }
-
-    insert(element) {
-        let digests = []
-        for (let i = 0; i < this.hash_count; ++i) {
-            let index = murmurhash.v3(element, i) % this.size
-            digests.push(index)
-            this.bit_set[index] = 1;
+        this.false_positive = false_positive;
+        this.size = this.getSize(this.items_count, this.false_positive);
+        this.hash_count = this.getHashCount(this.size, this.items_count);
+        this.partitions_count = partitions_count;
+        this.bit_set = [];
+        for (let i = 0; i < this.partitions_count; i++) {
+            this.bit_set[i] = [];
+            for (let j = 0; j < this.size / this.partitions_count; j++) this.bit_set[i][j] = 0;
         }
         if (this.logger) {
-            console.log(styles`${cyan}${bold}[*]New Element Inserted ${x}${red}=> ${x}${x}` + element)
+            log(`[type: ` + styles`${cyan}${bold}Partitioned Bloom${x}${x}, ` + `log: ` + styles`${cyan}${bold}PartitionedBloomFilter instance created.${x}${x}]`);
         }
     }
+    // Get the size of each partition
+    getSizePerPartition() {
+        const m = -(this.itemsCountPerPartition * Math.log(this.falsePositiveRate)) / (Math.log(2) ** 2)
+        return Math.ceil(m)
+    }
 
+    // Get the number of hash functions for each partition
+    getHashCountPerPartition() {
+        const k = (this.sizePerPartition / this.itemsCountPerPartition) * Math.log(2)
+        return Math.ceil(k)
+    }
+
+    // Initialize the bit set for each partition
+    initializeBitSet() {
+        const bitSet = []
+        for (let i = 0; i < this.numberOfPartitions; i++) {
+            bitSet.push(new Array(this.sizePerPartition).fill(0))
+        }
+        return bitSet
+    }
+
+    // Get the index of the partition for an element
+    getPartitionIndex(element) {
+        const hash = murmurhash.v3(element)
+        return hash % this.numberOfPartitions
+    }
+    // Primary Method definitions:
+    insert(element) {
+        for (let i = 0; i < this.hash_count; ++i) {
+            let index = murmurhash.v3(element, i) % (this.size / this.partitions_count);
+            let partition_index = Math.floor(murmurhash.v3(element, i) % this.partitions_count);
+            this.bit_set[partition_index][index] = 1;
+        }
+        if (this.logger) {
+            log(`[type: ` + styles`${cyan}${bold}Partitioned Bloom${x}${x}, ` + `log: ` + styles`${cyan}${bold}New Element Inserted${x}${x}` + styles`${cyan}(${x}` + element + styles`${cyan})${x} ]`);
+        }
+    }
     find(element) {
         for (let i = 0; i < this.hash_count; i++) {
-            let index = Math.ceil(murmurhash.v3(element, i) % this.size)
-            if (this.bit_set[index] == 0)
-                return false
+            let index = Math.ceil(murmurhash.v3(element, i) % (this.size / this.partitions_count));
+            let partition_index = Math.floor(murmurhash.v3(element, i) % this.partitions_count);
+            if (this.bit_set[partition_index][index] == 0) {
+                return false;
+            }
+
         }
-        if (this.logger)
-            console.log(styles`${blackBright}${bold}[*]Element exists. ${x}${x}`)
-        return true
     }
 }
 
 /*******************
- *  © Blumea | 2022
+ *  © Blumea | 2023
  * *****************/
 module.exports = PartitionedBloomFilter;
