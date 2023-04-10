@@ -1,7 +1,7 @@
 {
   "name": "blumea",
-  "version": "1.0.6",
-  "description": "Blumea is an easy to plug Bloom filter solution for your applications.",
+  "version": "1.0.7",
+  "description": "Blumea is a streamlined Bloom filter npm package for your node apps.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
