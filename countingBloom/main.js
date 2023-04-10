@@ -44,8 +44,8 @@ class CountingBloomFilter {
 
         this.items_count = items_count;
         this.false_positive = false_positive;
-        this.size = this.getSize(this.item_count, this.false_positive)
-        this.hash_count = this.getHashCount(this.size, this.items_count)
+        this.size = this.getSize();
+        this.hash_count = this.getHashCount();
         this.bit_set = [] //Array of Object
 
         for (let i = 0; i < this.size; i++)
@@ -61,32 +61,60 @@ class CountingBloomFilter {
 
     // Primary Method definitions:
     insert(element) {
-        let element_count = 0;
-        let digests = []
-        for (let i = 0; i < this.hash_count; ++i) {
-            let index = murmurhash.v3(element, i) % this.size
-            digests.push(index)
-            this.bit_set[index].count_bit += 1; //count bit
-            this.bit_set[index].values.push(element);
-            element_count = this.bit_set[index].count_bit;
-        }
-        if (this.logger) {
-            log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + element + styles`${blue}${bold} added to the filter${x}${x}, ` + `Count: ` + element_count + `]`)
+        try {
+            if (!element) {
+                throw new Error('Invalid input element (' + element + ')')
+            }
+            if (typeof element !== 'string') {
+                element = element.toString();
+            }
+            let element_count = 0;
+            let digests = []
+            for (let i = 0; i < this.hash_count; ++i) {
+                let index = murmurhash.v3(`${element}`, i) % this.size;
+                digests.push(index);
+                this.bit_set[index].count_bit += 1; //count bit
+                this.bit_set[index].values.push(element);
+                element_count = this.bit_set[index].count_bit;
+            }
+            if (this.logger) {
+                log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + element + styles`${blue}${bold} added to the filter${x}${x}, ` + `Count: ` + element_count + `]`)
+            }
+        } catch (e) {
+            if (this.logger) {
+                log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}error with insert() method${x}${x}, ` + e.message + `]`)
+            }
         }
     }
 
     find(element) {
-        for (let i = 0; i < this.hash_count; i++) {
-            let index = Math.ceil(murmurhash.v3(element, i) % this.size)
-            if (this.bit_set[index] === {} || this.bit_set[index] === undefined || this.bit_set[index].count_bit == 0) {
-                return false
+        try {
+            if (!element) {
+                throw new Error('Invalid input element (' + element + ')')
             }
-        }
+            if (typeof element !== 'string') {
+                element = element.toString();
+            }
+            for (let i = 0; i < this.hash_count; i++) {
+                const index = Math.ceil(murmurhash.v3(element, i) % this.size);
+                if (!this.bit_set[index] || !this.bit_set[index].hasOwnProperty('count_bit') || this.bit_set[index].count_bit === 0) {
+                    if (this.logger) {
+                        log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + element + styles`${blue}${bold} does not exist${x}${x}]`)
+                    }
+                    return false;
+                }
+            }
 
-        if (this.logger) {
-            log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + element + styles`${blue}${bold} already exists${x}${x}]`)
+            if (this.logger) {
+                log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + element + styles`${blue}${bold} exists${x}${x}]`)
+            }
+        } catch (e) {
+            if (this.logger) {
+                log(`[type: ` + styles`${blue}${bold}Counting Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}error with find() method${x}${x}, ` + e.message + `]`)
+            }
+            return false;
         }
-        return true
+        return true;
     }
 
 
