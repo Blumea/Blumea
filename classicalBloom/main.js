@@ -5,6 +5,7 @@
 */
 const murmurhash = require('murmurhash')
 const { isLogsActive } = require('../logger/logger')
+const { log, warn } = require('console')
 
 const styles = require('terminal-styles')
 const { cyan, x, red, bold, blackBright } = styles
@@ -27,10 +28,10 @@ class BloomFilter {
         this.logger = isLogsActive();
         this.items_count = items_count;
         // Prevent invalid false positive rate inputs:
-        if (false_positive <= 0.0 || false_positive >= 0.999 || false_positive < 0.0001) {
+        if (false_positive >= 0.999 || false_positive < 0.01) {
             false_positive = 0.01; //set to lowest safe permitted value.
             if (this.logger)
-                console.log(styles`${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
+                log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}Invalid False positive rate. Updated to: 0.01${x}${x}]`)
         }
 
         this.false_positive = false_positive;
@@ -40,6 +41,10 @@ class BloomFilter {
 
         for (let i = 0; i < this.size; i++)
             this.bit_set[i] = 0
+
+        if (this.logger) {
+            log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${cyan}${bold}ClassicalBloomFilter instance created.${x}${x}]`)
+        }
     }
 
     // Primary Method definitions:
@@ -51,7 +56,7 @@ class BloomFilter {
             this.bit_set[index] = 1;
         }
         if (this.logger) {
-            console.log(styles`${cyan}${bold}[*]New Element Inserted ${x}${red}=> ${x}${x}` + element)
+            log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${cyan}${bold}New Element Inserted${x}${x}` + styles`${cyan}(${x}` + element + styles`${cyan})${x} ]`)
         }
     }
 
@@ -62,8 +67,9 @@ class BloomFilter {
                 return false
             }
         }
-        if (this.logger)
-            console.log(styles`${blackBright}${bold}[*]Element exists. ${x}${x}`)
+        if (this.logger) {
+            log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ${element}` + styles`${cyan}${bold} element exists.${x}${x}`)
+        }
         return true
     }
 
@@ -76,14 +82,16 @@ class BloomFilter {
 
         for (let i = 0; i < this.size; i++)
             this.bit_set[i] = 0
-        if (this.logger)
-            console.log(styles`${cyan}${bold}[*]Item Count updated to:${x} ${x}` + this.items_count)
+        if (this.logger) {
+            log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${cyan}${bold}Item Count updated to: ${x}${x}` + this.items_count + ']')
+        }
     }
 
     updateFalsePositiveRate(newFalsePostive) {
         if (newFalsePostive <= 0.0 || newFalsePostive >= 0.999) {
-            if (this.logger)
-                console.log(styles`${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
+            if (this.logger) {
+                log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}Invalid False positive rate.Updated to: 0.01${x}${x}]`)
+            }
             newFalsePostive = 0.01;
         }
         this.false_positive = newFalsePostive;
@@ -93,8 +101,9 @@ class BloomFilter {
 
         for (let i = 0; i < this.size; i++)
             this.bit_set[i] = 0
-        if (this.logger)
-            console.log(styles`${cyan}${bold}[*]False positive rate updated to:${x} ${x}` + this.false_positive)
+        if (this.logger) {
+            log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${cyan}${bold}False positive rate updated to: ${x}${x}` + this.false_positive + ']')
+        }
     }
 
     getHashFunctionCount() {
