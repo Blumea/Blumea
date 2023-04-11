@@ -184,6 +184,63 @@ To import the BloomFilter class from the Blumea package into your project, use t
 
   ```
 ---
+### 3. 🔖**Partition Bloom Filter**
+
+#### **About**
+A Partitioned Bloom Filter (PBF) is a probabilistic data structure that allows efficient set membership testing. A PBF consists of multiple independent Bloom filters, each of which has a unique hash function. The Bloom filters are divided into partitions, and each partition is allocated a portion of the overall bit array used by the PBF. Each element is hashed by each of the unique hash functions, and the resulting hash values are used to set bits in the corresponding partitions of the Bloom filters.
+#### **How to import?**
+To import the BloomFilter class from the Blumea package into your project, use the following:
+  ```javascript
+    const { PartitionedBloomFilter } = require('blumea');
+
+    /**
+     * Create a Bloom filter instance for your app.
+     * Provide item count and an acceptable false positive rate.
+     */ 
+
+    let filter = new PartitionedBloomFilter(5999, 0.03);
+  ```
+#### **Methods:**
+* **insert(element)** : This function inserts a new element into the bloom filter by setting the appropriate bits in each partition's bit set based on the hash values of the element.
+
+* **find(element)** : This function checks if a given element is present in the bloom filter by checking the appropriate bits in each partition's bit set based on the hash values of the element. It returns false if any of the bits are zero, indicating that the element is definitely not in the bloom filter, or true if all of the bits are one, indicating that the element may be in the bloom filter.
+
+* **initializeBitSet()** : Initializes the bit set for each partition of the bloom filter.
+
+* **getPartitionIndex(element)** : Calculates and returns the index of the partition that a given element should belong to.
+
+* **getHashCountPerPartition()** : Calculates and returns the number of hash functions to use in each partition of the bloom filter based on the size of each partition and the number of items in each partition.
+
+* **getSizePerPartition()** : Calculates and returns the size of each partition in the bloom filter based on the number of items in each partition and the desired false positive rate.
+
+* **Utility Methods:**
+  * **getHashCount()** or **filter.hash_count**
+  * **getSize()** or **filter.size**
+
+#### ❗Usage Warning:
+- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
+
+- The valid range for false positive rates is between 0.001 and 0.999.
+
+**Sample Node app with Partition Bloom Filter**:
+  ```javascript
+    const { PartitionedBloomFilter } = require('blumea')
+
+    // Create a new Partitioned Bloom Filter with 100 items, 0.05 false positive rate, and 4 partitions.
+    const pbf = new PartitionedBloomFilter(100, 0.05, 4)
+
+    // Insert some elements
+    pbf.insert('foo')
+    pbf.insert('bar')
+
+    // Check if an element exists in the filter
+    console.log(pbf.find('foo')) // Returns true
+    console.log(pbf.find('baz')) // Returns false
+
+    // Check the number of hash functions used in each partition
+    console.log(pbf.getHashCountPerPartition())
+```
+---
 
 ## 🚧 Support Details
 
