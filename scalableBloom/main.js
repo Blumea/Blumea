@@ -4,13 +4,10 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const chalk = require('chalk');
-const { isLogsActive } = require('../logger/logger')
+const { isLogsActive, blumeaLogger } = require('../logger/logger')
 const { logConfig } = require('../logger/config');
-const { log, warn } = require('console')
+const { warn } = require('console')
 
-const styles = require('terminal-styles')
-const { magenta, x, red, bold, blackBright } = styles
 
 class ScalableBloomFilter {
     constructor(item_count, false_positive, initial_capacity = 1000, growth_factor = 2) {
@@ -19,21 +16,20 @@ class ScalableBloomFilter {
         if (!item_count || Number(item_count) > 7_000_000 || item_count <= 0) {
             item_count = 10000;
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Invalid expected item count. Updated to: 10000') + ']');
+                blumeaLogger('scalable', null, 'Invalid expected item count. Updated to: 10000');
             }
         }
 
         if (!initial_capacity || Number(initial_capacity) > 7_000_000 || initial_capacity <= 0) {
             initial_capacity = 10000;
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Invalid initial_capacity. Updated to: 10000') + ']');
-                // log(`[type: ` + styles`${magenta}${bold}Scalable Bloom beta${x}${x}, ` + `log: ` + styles`${hex(config.levels.error.color)}${bold}Invalid initial_capacity. Updated to: 10000${x}${x}]`)
+                blumeaLogger('scalable', null, 'Invalid initial_capacity. Updated to: 10000');
             }
         }
         if (!false_positive || false_positive >= 0.999 || false_positive < 0.01) {
             false_positive = 0.01;
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Invalid False positive rate. Updated to: 0.01') + ']');
+                blumeaLogger('scalable', null, 'Invalid False positive rate. Updated to: 0.01');
             }
 
         }
@@ -41,7 +37,7 @@ class ScalableBloomFilter {
         if (!growth_factor || growth_factor >= 5 || growth_factor <= 0) {
             growth_factor = 2;
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Invalid growth_factor. Updated to: 2') + ']');
+                blumeaLogger('scalable', null, 'Invalid growth_factor. Updated to: 2');
             }
         }
         this.item_count = Number(item_count);
@@ -54,7 +50,7 @@ class ScalableBloomFilter {
         this.itemCount = 0;
 
         if (this.logger) {
-            log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.magentaBright.bold('ScalableBloomFilter instance created.') + ']');
+            blumeaLogger('scalable', 'ScalableBloomFilter instance created.');
         }
     }
 
@@ -68,12 +64,12 @@ class ScalableBloomFilter {
             this.itemCount++;
 
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.magentaBright.bold(`${element} added to the filter.`) + ']');
+                blumeaLogger('scalable', `${element} added to the filter.`);
             }
 
         } catch (e) {
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Error with filter instance.') + ']');
+                blumeaLogger('scalable', null, 'Error with filter instance.')
                 warn(e);
             }
         }
@@ -84,7 +80,7 @@ class ScalableBloomFilter {
             for (const filter of this.filters) {
                 if (filter.find(element)) {
                     if (this.logger) {
-                        log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.magentaBright.bold(`${element} exists.`) + ']');
+                        blumeaLogger('scalable', `${element} exists.`);
 
                     }
                     return true;
@@ -92,13 +88,13 @@ class ScalableBloomFilter {
             }
         } catch (e) {
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Error with filter instance.') + ']');
-                warn(e);
+                blumeaLogger('scalable', null, 'Error with filter instance.');
+                warn(e.message);
             }
         }
 
         if (this.logger) {
-            log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.magentaBright.bold(`${element} does not exist.`) + ']');
+            blumeaLogger('scalable', `${element} does not exist.`);
         }
         return false;
     }
@@ -163,8 +159,8 @@ class BloomFilter {
             this.itemCount++;
         } catch (e) {
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Error with filter instance.') + ']');
-                warn(e);
+                blumeaLogger('scalable', null, 'Error with filter instance.');
+                warn(e.message);
             }
         }
     }
@@ -186,8 +182,8 @@ class BloomFilter {
             }
         } catch (e) {
             if (this.logger) {
-                log('[type: ' + chalk.magentaBright.bold('Scalable Bloom beta') + ', log: ' + chalk.hex(logConfig.levels.error.color).bold('Error with filter instance.') + ']');
-                warn(e);
+                blumeaLogger('scalable', null, 'Error with filter instance.');
+                warn(e.message);
             }
         }
         return true;
