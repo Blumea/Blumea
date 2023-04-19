@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Blumea/Blumea#readme",
   "dependencies": {
-    "dotenv": "^16.0.0",
+    "chalk": "4.1.2",
     "murmurhash": "^2.0.0",
     "terminal-styles": "^1.0.0"
   }
