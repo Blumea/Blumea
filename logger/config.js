@@ -1,4 +1,4 @@
-export default {
+exports.logConfig = {
     levels: {
         access: {
             color: '#89f5a0',
@@ -45,5 +45,24 @@ export default {
             writeToConsole: true,
             writeToFile: false
         }
+    },
+    type: {
+        classical: {
+            color: 'cyan'
+        },
+        counting: {
+            color: 'blue'
+        },
+        partitioned: {
+            color: 'yellow'
+        },
+        scalable: {
+            color: 'magentaBright'
+        },
+        cuckoo: {
+            color: 'magentaBright'
+        }
     }
 }
+
+// export default logConfig;

@@ -78,6 +78,7 @@ class BloomFilter {
         } catch (e) {
             if (this.logger) {
                 log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}error with insert() method${x}${x}, ` + e.message + `]`)
+                warn(e.message);
             }
         }
     }
@@ -103,6 +104,7 @@ class BloomFilter {
         } catch (e) {
             if (this.logger) {
                 log(`[type: ` + styles`${cyan}${bold}Classical Bloom${x}${x}, ` + `log: ` + styles`${red}${bold}error with find() method${x}${x}, ` + e.message + `]`)
+                warn(e.message);
             }
             return false;
         }
