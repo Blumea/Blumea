@@ -4,15 +4,33 @@
  * *****************************************
 */
 const flags = process.argv
-const { log } = require('console')
+const { log, warn } = require('console')
+const { logConfig } = require('./config');
+const chalk = require('chalk');
 const styles = require('terminal-styles')
 const { version } = require('../package.json')
 
 let logActiveDisplayed = false;
 let logInactiveDisplayed = false;
 
+const blumeaLogger = (type = null, message = null, error = null) => {
+    if (!type) {
+        type = 'default'
+    }
+    if (error) {
+        log('[type: ' + chalk.hex(logConfig.types[type].color).bold(logConfig.types[type].name) + ', log: ' + chalk.hex(logConfig.levels.error.color).bold(error.toString()) + ']');
+        return;
+    }
+
+    if (!message) {
+        warn(chalk.yellowBright.bold('[*] blumea-logger: Invalid log message provided'));
+    } else {
+        log('[type: ' + chalk.hex(logConfig.types[type].color).bold(logConfig.types[type].name) + ', log: ' + chalk.hex(logConfig.types[type].color).bold(message.toString()) + ']');
+    }
+}
+
 const displayLoggerDetails = () => {
-    log('\n' + styles`${styles.bold}${styles.blackBright}[*] Using Blumea ${styles.x}${styles.x}` + 'v' + version + styles`${styles.bold}${styles.blackBright} with the current app${styles.x}${styles.x}`)
+    log('\n' + chalk.greenBright.bold(`[*] Using Blumea v${version} with the app.`))
 }
 
 const displayLogActive = () => {
@@ -20,8 +38,9 @@ const displayLogActive = () => {
         return;
     } else {
         logActiveDisplayed = true;
-        log(styles`\n${styles.greenBright}██████╗ ██╗     ██╗   ██╗███╗   ███╗███████╗ █████╗\n██╔══██╗██║     ██║   ██║████╗ ████║██╔════╝██╔══██╗\n██████╔╝██║     ██║   ██║██╔████╔██║█████╗  ███████║\n██╔══██╗██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██║\n██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║\n╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝${styles.x}`)
-        log(styles`${styles.bold}${styles.blackBright}[*] Blumea Logger is active...${styles.x}${styles.x}`)
+        log(chalk.greenBright.bold('[*] Blumea Logger is active...'));
+        log(chalk.greenBright('██████╗ ██╗     ██╗   ██╗███╗   ███╗███████╗ █████╗\n██╔══██╗██║     ██║   ██║████╗ ████║██╔════╝██╔══██╗\n██████╔╝██║     ██║   ██║██╔████╔██║█████╗  ███████║\n██╔══██╗██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██║\n██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║\n╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝'))
+        // log(styles`${styles.bold}${styles.blackBright}[*] Blumea Logger is active...${styles.x}${styles.x}`)
     }
 }
 
@@ -46,4 +65,4 @@ const isLogsActive = () => {
     return false;
 }
 
-module.exports = { displayLoggerDetails, isLogsActive }
+module.exports = { displayLoggerDetails, isLogsActive, blumeaLogger }

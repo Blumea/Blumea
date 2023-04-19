@@ -46,23 +46,30 @@ exports.logConfig = {
             writeToFile: false
         }
     },
-    type: {
+    types: {
         classical: {
-            color: 'cyan'
+            color: '#00FFFF', //cyan
+            name: 'Classical Bloom'
         },
         counting: {
-            color: 'blue'
+            color: '#0000FF', //blue
+            name: 'Counting Bloom'
         },
         partitioned: {
-            color: 'yellow'
+            color: '#A020F0', //purple,
+            name: 'Partitioned Bloom'
         },
         scalable: {
-            color: 'magentaBright'
+            color: '#FFFF00', //yellowDark
+            name: 'Scalable Bloom'
         },
         cuckoo: {
-            color: 'magentaBright'
+            color: '#FF00CD', //magentaBright
+            name: 'Cuckoo Bloom'
+        },
+        default: {
+            color: '#AAFF00', //greenBright
+            name: 'Blumea Logger'
         }
     }
 }
-
-// export default logConfig;
