@@ -3,7 +3,7 @@
  * authors: @akashchouhan16 @singhtaran1005
  * *****************************************
 */
-require('dotenv').config()
+
 require('./logger/logger').displayLoggerDetails();
 
 

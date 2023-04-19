@@ -1,4 +1,4 @@
-export default {
+exports.logConfig = {
     levels: {
         access: {
             color: '#89f5a0',
@@ -44,6 +44,32 @@ export default {
             color: '#910909',
             writeToConsole: true,
             writeToFile: false
+        }
+    },
+    types: {
+        classical: {
+            color: '#00FFFF', //cyan
+            name: 'Classical Bloom'
+        },
+        counting: {
+            color: '#0000FF', //blue
+            name: 'Counting Bloom'
+        },
+        partitioned: {
+            color: '#A020F0', //purple,
+            name: 'Partitioned Bloom'
+        },
+        scalable: {
+            color: '#FFFF00', //yellowDark
+            name: 'Scalable Bloom'
+        },
+        cuckoo: {
+            color: '#FF00CD', //magentaBright
+            name: 'Cuckoo Bloom'
+        },
+        default: {
+            color: '#AAFF00', //greenBright
+            name: 'Blumea Logger'
         }
     }
 }
