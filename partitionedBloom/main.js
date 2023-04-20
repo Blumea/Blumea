@@ -36,7 +36,13 @@ class PartitionedBloomFilter {
                 blumeaLogger('partitioned', null, 'Invalid false positive rate, updated to: 0.01.');
             }
         }
-        // TODO: add a check for partitions_count
+        // Prevent invalid partitions_count:
+        if (!partitions_count || partitions_count <= 0) {
+            partitions_count = 1;
+            if (this.logger) {
+                blumeaLogger('partitioned', null, 'Invalid partitions count, updated to: 1.');
+            }
+        }
 
         this.items_count = Number(items_count);
         this.false_positive = Number(false_positive);
