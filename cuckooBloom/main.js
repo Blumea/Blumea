@@ -1,6 +1,6 @@
 /*******************************************
  * copyright: @github.com/Blumea  
- * authors: @akashchouhan16
+ * authors: @singhtaran1005
  * *****************************************
 */
 const murmurhash = require('murmurhash')
