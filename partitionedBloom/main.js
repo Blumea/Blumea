@@ -88,6 +88,13 @@ class PartitionedBloomFilter {
     // Primary Method definitions:
     insert(element) {
         try {
+            if (!element) {
+                throw new Error('Invalid input element (' + element + ')')
+            }
+            if (typeof element !== 'string') {
+                element = element.toString();
+            }
+
             for (let i = 0; i < this.hash_count; ++i) {
                 let index = murmurhash.v3(element, i) % (this.size / this.partitions_count);
                 let partition_index = Math.floor(murmurhash.v3(element, i) % this.partitions_count);
@@ -103,6 +110,12 @@ class PartitionedBloomFilter {
     }
     find(element) {
         try {
+            if (!element) {
+                throw new Error('Invalid input element (' + element + ')')
+            }
+            if (typeof element !== 'string') {
+                element = element.toString();
+            }
             for (let i = 0; i < this.hash_count; i++) {
                 let index = Math.ceil(murmurhash.v3(element, i) % (this.size / this.partitions_count));
                 let partition_index = Math.floor(murmurhash.v3(element, i) % this.partitions_count);
