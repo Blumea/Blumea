@@ -1,10 +1,14 @@
 {
   "name": "blumea",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Blumea is a streamlined Bloom filter npm package for your node apps.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test/classical": "echo \"Manual tests on classical bloom..\" && cd Tests && node test-classical.js -log",
+    "test/counting": "echo \"Manual tests on counting bloom..\" && cd Tests && node test-counting.js -log",
+    "test/partitioned": "echo \"Manual tests on partitioned bloom..\" && cd Tests && node test-partitioned.js -log",
+    "test/scalable": "echo \"Manual tests on scalable bloom..\" && cd Tests && node test-scalable.js -log",
+    "test/cuckoo": "echo \"Manual tests on cuckoo bloom..\" && cd Tests && node test-cuckoo.js -log"
   },
   "repository": {
     "type": "git",
