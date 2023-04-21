@@ -13,7 +13,7 @@ const PartitionedBloomFilter = require('./partitionedBloom/main')
 
 const CountingBloomFilter = require('./countingBloom/main')
 
-const ScalableBloomFilter = require('./scalableBloom/main')
+const ScalableBloomFilter = require('./scalableBloom/main-v2')
 
 // TODO
 const CuckooBloomFilter = require('./cuckooBloom/main')

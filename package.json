@@ -28,6 +28,7 @@
   "dependencies": {
     "chalk": "4.1.2",
     "murmurhash": "^2.0.0",
+    "murmurhash-js": "^1.0.0",
     "terminal-styles": "^1.0.0"
   }
 }
