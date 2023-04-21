@@ -5,7 +5,7 @@
 */
 const murmurhash = require('murmurhash')
 const { isLogsActive, blumeaLogger } = require('../logger/logger')
-
+const { warn } = require('console')
 
 class PartitionedBloomFilter {
     // Utility methods.
