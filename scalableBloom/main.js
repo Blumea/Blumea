@@ -1,6 +1,7 @@
 /*******************************************
  * copyright: @github.com/Blumea  
  * authors: @akashchouhan16
+ * note: Test module for v1.0.7
  * *****************************************
 */
 const murmurhash = require('murmurhash')
