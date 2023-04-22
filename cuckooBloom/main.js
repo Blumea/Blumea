@@ -4,107 +4,120 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const { isLogsActive } = require('../logger/logger')
-
-const styles = require('terminal-styles')
-const { cyan, x, red, bold, blackBright } = styles
-
+const { isLogsActive, blumeaLogger } = require('../logger/logger')
 
 class CuckooBloomFilter {
-
+    // Utility methods.
     getSize() {
-        let m = -(this.items_count * Math.log(this.false_positive)) / (Math.log(2) ** 2)
+        let m = -(this.items_count * Math.log(this.false_positive)) / (Math.log(2) ** 2);
         return Math.ceil(m);
     }
     getHashCount() {
-        let k = (this.size / this.items_count) * Math.log(2)
-        return Math.ceil(k);
+        let k = Math.ceil(Math.log(2) * (this.size / this.items_count));
+        return k;
     }
-
-    // Bloom filter instance initialization:
+    // Cuckoo Bloom filter instance initialization:
     constructor(items_count, false_positive) {
         this.logger = isLogsActive();
-        this.items_count = items_count;
+        // Prevent invalid item_count:
+        if (!items_count || Number(items_count) > 7_000_000 || items_count <= 0) {
+            items_count = 10000; //set to lowest safe permitted value.
+            if (this.logger) {
+                blumeaLogger('cuckoo', null, 'Invalid item count, updated to: 10000.');
+            }
+        }
         // Prevent invalid false positive rate inputs:
-        if (false_positive <= 0.0 || false_positive >= 0.999 || false_positive < 0.0001) {
-            false_positive = 0.01; //set to lowest safe permitted value.
-            if (this.logger)
-                console.log(styles`${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
+        if (false_positive >= 0.999 || false_positive < 0.01) {
+            false_positive = 0.01;
+            if (this.logger) {
+                blumeaLogger('cuckoo', null, 'Invalid false positive rate, updated to: 0.01.');
+            }
         }
 
-        this.false_positive = false_positive;
-        this.size = this.getSize(this.item_count, this.false_positive)
-        this.hash_count = this.getHashCount(this.size, this.items_count)
-        this.bit_set = []
-
-        for (let i = 0; i < this.size; i++)
-            this.bit_set[i] = 0
+        this.items_count = Number(items_count);
+        this.false_positive = Number(false_positive);
+        this.size = this.getSize(this.items_count, this.false_positive);
+        this.hash_count = this.getHashCount(this.size, this.items_count);
+        this.table1 = new Array(this.size).fill(0);
+        this.table2 = new Array(this.size).fill(0);
+        if (this.logger) {
+            blumeaLogger('cuckoo', 'CuckooBloomFilter instance created.');
+        }
     }
 
     // Primary Method definitions:
     insert(element) {
-        let digests = []
-        for (let i = 0; i < this.hash_count; ++i) {
-            let index = murmurhash.v3(element, i) % this.size
-            digests.push(index)
-            this.bit_set[index] = 1;
-        }
-        if (this.logger) {
-            console.log(styles`${cyan}${bold}[*]New Element Inserted ${x}${red}=> ${x}${x}` + element)
-        }
-    }
-
-    find(element) {
-        for (let i = 0; i < this.hash_count; i++) {
-            let index = Math.ceil(murmurhash.v3(element, i) % this.size)
-            if (this.bit_set[index] == 0) {
-                return false
+        try {
+            let index1 = murmurhash.v3(element) % this.size;
+            let index2 = murmurhash.v3(element, 1) % this.size;
+            if (this.table1[index1] == 0) {
+                this.table1[index1] = element;
+                if (this.logger) {
+                    blumeaLogger('cuckoo', `${element} added to table1.`);
+                }
+                return true;
+            } else if (this.table2[index2] == 0) {
+                this.table2[index2] = element;
+                if (this.logger) {
+                    blumeaLogger('cuckoo', `${element} added to table2.`);
+                }
+                return true;
+            } else {
+                // Both slots occupied. Perform cuckoo hashing.
+                let victim = element;
+                for (let i = 0; i < this.hash_count; i++) {
+                    let index = murmurhash.v3(victim, i) % this.size;
+                    if (this.table1[index] == 0) {
+                        this.table1[index] = victim;
+                        if (this.logger) {
+                            blumeaLogger('cuckoo', `Cuckoo hash with ${element} at table2[${index2}] replaced with ${victim} at table1[${index}].`);
+                        }
+                        return true;
+                    } else if (this.table2[index] == 0) {
+                        this.table2[index] = victim;
+                        if (this.logger) {
+                            blumeaLogger('cuckoo', `Cuckoo hash with ${element} at table1[${index1}] replaced with ${victim} at table2[${index}].`);
+                        }
+                        return true;
+                    } else {
+                        // Both slots still occupied. Swap the current element with the existing one.
+                        let tmp = this.table1[index];
+                        this.table1[index] = victim;
+                        victim = tmp;
+                        index = murmurhash.v3(victim, i) % this.size;
+                        if (this.table2[index] == 0) {
+                            this.table2[index] = victim;
+                            if (this.logger) {
+                                blumeaLogger('cuckoo', `Cuckoo hash with ${element} at table1[${index1}] replaced with ${victim} at table2[${index}].`);
+                            }
+                            return true;
+                        }
+                    }
+                }
+                // Cuckoo hashing failed after `hash_count` attempts.
+                if (this.logger) {
+                    blumeaLogger('cuckoo', `Cuckoo hashing failed for ${element}.`);
+                }
+                return false;
             }
+        } catch (err) {
+            console.error(`Error inserting ${element}: ${err}`);
+            return false;
         }
-        if (this.logger)
-            console.log(styles`${blackBright}${bold}[*]Element exists. ${x}${x}`)
-        return true
     }
-
-    // secondary utility methods to access or update the bloom filter parameters.
-    updateItemCount(newItemCount) {
-        this.items_count = newItemCount
-        this.size = this.getSize(this.item_count, this.false_positive)
-        this.hash_count = this.getHashCount(this.size, this.items_count)
-        this.bit_set = []
-
-        for (let i = 0; i < this.size; i++)
-            this.bit_set[i] = 0
-        if (this.logger)
-            console.log(styles`${cyan}${bold}[*]Item Count updated to:${x} ${x}` + this.items_count)
-    }
-
-    updateFalsePositiveRate(newFalsePostive) {
-        if (newFalsePostive <= 0.0 || newFalsePostive >= 0.999) {
-            if (this.logger)
-                console.log(styles`${red}${bold}[*]Invalid False positive rate. Updated to: 0.01${x}${x}`)
-            newFalsePostive = 0.01;
+    find(element) {
+        try {
+            let index1 = murmurhash.v3(element) % this.size;
+            let index2 = murmurhash.v3(element, 1) % this.size;
+            return this.table1[index1] == element || this.table2[index2] == element;
+        } catch (err) {
+            console.error(`Error finding ${element}: ${err}`);
+            return false;
         }
-        this.false_positive = newFalsePostive;
-        this.size = this.getSize(this.item_count, this.false_positive)
-        this.hash_count = this.getHashCount(this.size, this.items_count)
-        this.bit_set = []
-
-        for (let i = 0; i < this.size; i++)
-            this.bit_set[i] = 0
-        if (this.logger)
-            console.log(styles`${cyan}${bold}[*]False positive rate updated to:${x} ${x}` + this.false_positive)
-    }
-
-    getHashFunctionCount() {
-        return this.hash_count;
-    }
-    getBitArraySize() {
-        return this.size;
     }
 }
 
 /*******************
- *  © Blumea | 2022
+ *  © Blumea | 2023
  * *****************/
-module.exports = CuckooBloomFilter;
+ module.exports = CuckooBloomFilter;

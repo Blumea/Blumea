@@ -15,10 +15,9 @@ const CountingBloomFilter = require('./countingBloom/main')
 
 const ScalableBloomFilter = require('./scalableBloom/main-v2')
 
-// TODO
 const CuckooBloomFilter = require('./cuckooBloom/main')
 
 const { buildVector, setBit, getBit } = require('./classicalBloom/bitarray')
 const bitArray = { buildVector, setBit, getBit }
 
-module.exports = { BloomFilter, PartitionedBloomFilter, CountingBloomFilter, ScalableBloomFilter, bitArray }
+module.exports = { BloomFilter, PartitionedBloomFilter, CountingBloomFilter, CuckooBloomFilter, ScalableBloomFilter, bitArray }
