@@ -33,6 +33,13 @@ class CuckooBloomFilter {
                 blumeaLogger('cuckoo', null, 'Invalid false positive rate, updated to: 0.01.');
             }
         }
+        // Prevent invalid hash count values
+        if (hash_count <= 0) {
+            hash_count = 1;
+            if (logger) {
+                blumeaLogger('cuckoo', null, 'Invalid number of hash functions, updated to: 1.');
+            }
+        }
 
         this.items_count = Number(items_count);
         this.false_positive = Number(false_positive);
@@ -101,8 +108,11 @@ class CuckooBloomFilter {
                 return false;
             }
         } catch (err) {
-            console.error(`Error inserting ${element}: ${err}`);
-            return false;
+            if (this.logger) {
+                blumeaLogger('cuckoo', `Error inserting`);
+            } else {
+                warn(err.message);
+            }
         }
     }
     find(element) {
@@ -111,8 +121,11 @@ class CuckooBloomFilter {
             let index2 = murmurhash.v3(element, 1) % this.size;
             return this.table1[index1] == element || this.table2[index2] == element;
         } catch (err) {
-            console.error(`Error finding ${element}: ${err}`);
-            return false;
+            if (this.logger) {
+                blumeaLogger('cuckoo', null, err.message);
+            } else {
+                warn(err.message);
+            }
         }
     }
 }
@@ -120,4 +133,4 @@ class CuckooBloomFilter {
 /*******************
  *  © Blumea | 2023
  * *****************/
- module.exports = CuckooBloomFilter;
+module.exports = CuckooBloomFilter;
