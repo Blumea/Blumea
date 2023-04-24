@@ -1,0 +1,6 @@
+# Repository Assets
+assets/
+
+# Test directories or files
+Tests/
+*.test.*
