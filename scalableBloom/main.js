@@ -1,167 +1,99 @@
 /*******************************************
  * copyright: @github.com/Blumea  
  * authors: @akashchouhan16
- * note: Test module for v1.0.7
  * *****************************************
 */
-const murmurhash = require('murmurhash')
-const { isLogsActive, blumeaLogger } = require('../logger/logger')
-const { logConfig } = require('../logger/config');
-const { warn } = require('console')
 
+const { isLogsActive, blumeaLogger } = require('../logger/logger')
+const { warn } = require('console')
+const murmurhash = require('murmurhash-js');
 
 class ScalableBloomFilter {
-    constructor(item_count, false_positive, initial_capacity = 1000, growth_factor = 2) {
-        this.logger = isLogsActive();
-
-        if (!item_count || Number(item_count) > 7_000_000 || item_count <= 0) {
-            item_count = 10000;
-            if (this.logger) {
-                blumeaLogger('scalable', null, 'Invalid expected item count. Updated to: 10000');
-            }
-        }
-
-        if (!initial_capacity || Number(initial_capacity) > 7_000_000 || initial_capacity <= 0) {
-            initial_capacity = 10000;
-            if (this.logger) {
-                blumeaLogger('scalable', null, 'Invalid initial_capacity. Updated to: 10000');
-            }
-        }
-        if (!false_positive || false_positive >= 0.999 || false_positive < 0.01) {
-            false_positive = 0.01;
-            if (this.logger) {
-                blumeaLogger('scalable', null, 'Invalid False positive rate. Updated to: 0.01');
-            }
-
-        }
-
-        if (!growth_factor || growth_factor >= 5 || growth_factor <= 0) {
-            growth_factor = 2;
-            if (this.logger) {
-                blumeaLogger('scalable', null, 'Invalid growth_factor. Updated to: 2');
-            }
-        }
-        this.item_count = Number(item_count);
-        this.false_positive = Number(false_positive);
-        this.initial_capacity = Number(initial_capacity);
-        this.growth_factor = Number(growth_factor);
-
-        this.currentFilter = new BloomFilter(item_count, false_positive, initial_capacity);
-        this.filters = [this.currentFilter];
-        this.itemCount = 0;
-
-        if (this.logger) {
-            blumeaLogger('scalable', 'ScalableBloomFilter instance created.');
-        }
-    }
-
-    insert(element) {
+    constructor(expectedItems = 1000, falsePositiveRate = 0.01, hashingFunctions = [murmurhash.murmur3]) {
         try {
-            if (this.currentFilter.isFull()) {
-                this.currentFilter = new BloomFilter(this.item_count, this.false_positive, this.initial_capacity * this.growth_factor);
-                this.filters.push(this.currentFilter);
-            }
-            this.currentFilter.insert(element);
-            this.itemCount++;
+            this.logger = isLogsActive();
 
-            if (this.logger) {
-                blumeaLogger('scalable', `${element} added to the filter.`);
+            if (!expectedItems || typeof expectedItems !== 'number' || expectedItems < 1) {
+                throw new Error('Expected items must be a positive number.');
+            }
+            if (!falsePositiveRate || typeof falsePositiveRate !== 'number' || falsePositiveRate < 0.01 || falsePositiveRate > 0.999) {
+                throw new Error('False positive rate must be a number between 0.01 and 0.999');
+            }
+            if (!Array.isArray(hashingFunctions) || hashingFunctions.length === 0) {
+                throw new Error('Hashing functions must be a non-empty array');
             }
 
-        } catch (e) {
+            this.expectedItems = expectedItems;
+            this.falsePositiveRate = falsePositiveRate;
+            this.hashingFunctions = hashingFunctions;
+            this.filterSize = this.getFilterSize(this.expectedItems, this.falsePositiveRate);
+            this.filter = new Uint8Array(this.filterSize);
+            this.itemCount = 0;
+            this.scalingFactor = 2;
+        } catch (error) {
             if (this.logger) {
-                blumeaLogger('scalable', null, 'Error with filter instance.')
-                warn(e);
+                blumeaLogger('scalable', null, `Error with constructor(): ${error.message}`)
+                process.exit(1);
+            } else {
+                warn(error.message);
+                process.exit(1)
             }
         }
     }
 
-    find(element) {
+    getFilterSize(expectedItems, falsePositiveRate) {
         try {
-            for (const filter of this.filters) {
-                if (filter.find(element)) {
-                    if (this.logger) {
-                        blumeaLogger('scalable', `${element} exists.`);
-
-                    }
-                    return true;
-                }
+            const numerator = -1 * expectedItems * Math.log(falsePositiveRate);
+            const denominator = Math.pow(Math.log(2), 2);
+            const filterSize = Math.ceil(numerator / denominator / 8);
+            if (isNaN(filterSize)) {
+                throw new Error('Could not calculate filter size');
             }
-        } catch (e) {
+            return filterSize;
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
+    *hash(item, seed) {
+        try {
+            for (const hashingFunction of this.hashingFunctions) {
+                yield hashingFunction(item, seed) % this.filterSize;
+            }
+        } catch (error) {
             if (this.logger) {
-                blumeaLogger('scalable', null, 'Error with filter instance.');
-                warn(e.message);
+                blumeaLogger('scalable', null, `Error occured: ${error.message}`)
+            } else {
+                warn(error.message);
             }
-        }
-
-        if (this.logger) {
-            blumeaLogger('scalable', `${element} does not exist.`);
-        }
-        return false;
-    }
-
-    get size() {
-        let totalSize = 0;
-        for (const element of this.filters) {
-            totalSize += element.size;
-        }
-        return totalSize;
-    }
-}
-
-
-// Private BloomFilter class without item or fp rate update option.
-class BloomFilter {
-    constructor(item_count, false_positive, size) {
-        this.item_count = item_count;
-        this.false_positive = false_positive;
-        this.size = size;
-        // TODO: Uint8Array to be used for space efficiency.
-        this.bitArray = new Array(size).fill(false);
-        this.hashFunctions = this.getHashFunctions();
-        this.itemCount = 0;
-    }
-
-    getHashFunctions() {
-        const hashCount = Math.ceil((this.size / this.item_count) * Math.log(2));
-        const hashFunctions = [];
-        for (let i = 0; i < hashCount; i++) {
-            hashFunctions.push(this.getHashFunction(i));
-        }
-        return hashFunctions;
-    }
-
-    getHashFunction(seed) {
-        return (item) => {
-            const itemStr = JSON.stringify(item);
-            let hash = 0;
-            for (let i = 0; i < itemStr.length; i++) {
-                const char = itemStr.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash &= hash; // Convert to 32bit integer
-            }
-            return Math.abs(seed * hash) % this.size;
         }
     }
 
     insert(item) {
         try {
             if (!item) {
-                throw new Error('Invalid input element (' + element + ')')
-            }
-            if (typeof item !== 'string') {
+                throw new Error(`${item} is an invalid input.`);
+            } else if (typeof item !== 'string') {
                 item = item.toString();
             }
 
-            for (const element of this.hashFunctions) {
-                const hash = element(item);
-                this.bitArray[hash] = true;
+            const hashes = this.hash(item, 0);
+            for (const hash of hashes) {
+                this.filter[hash] = 1;
             }
             this.itemCount++;
-        } catch (e) {
+            if (this.itemCount > this.filterSize * this.scalingFactor) {
+                this.scaleFilter();
+            }
+
             if (this.logger) {
-                blumeaLogger('scalable', null, 'Error with filter instance.');
-                warn(e.message);
+                blumeaLogger('scalable', `${item} added to the filter.`);
+            }
+        } catch (error) {
+            if (this.logger) {
+                blumeaLogger('scalable', null, `Error with insert(): ${error.message}`);
+            } else {
+                warn(error.message);
             }
         }
     }
@@ -169,29 +101,57 @@ class BloomFilter {
     find(item) {
         try {
             if (!item) {
-                throw new Error('Invalid input element (' + element + ')')
-            }
-            if (typeof item !== 'string') {
+                throw new Error(`${item} is an invalid input.`);
+            } else if (typeof item !== 'string') {
                 item = item.toString();
             }
-
-            for (const element of this.hashFunctions) {
-                const hash = element(item);
-                if (!this.bitArray[hash]) {
+            const hashes = this.hash(item, 0);
+            for (const hash of hashes) {
+                if (this.filter[hash] === 0) {
+                    if (this.logger) {
+                        blumeaLogger('scalable', `${item} does not exist.`);
+                    }
                     return false;
                 }
             }
-        } catch (e) {
+
             if (this.logger) {
-                blumeaLogger('scalable', null, 'Error with filter instance.');
-                warn(e.message);
+                blumeaLogger('scalable', `${item} exists.`);
+            }
+            return true;
+        } catch (error) {
+            if (this.logger) {
+                blumeaLogger('scalable', null, `Error with find(): ${error.message}`);
+            } else {
+                warn(error.message);
             }
         }
-        return true;
     }
 
-    isFull() {
-        return this.itemCount >= this.item_count;
+
+    scaleFilter() {
+        try {
+            const oldFilter = this.filter;
+            const oldFilterSize = this.filterSize;
+            this.filterSize *= this.scalingFactor;
+            this.filter = new Uint8Array(this.filterSize);
+            this.itemCount = 0;
+            for (let i = 0; i < oldFilterSize; i++) {
+                if (oldFilter[i] === 1) {
+                    const item = Math.floor(i / this.hashingFunctions.length);
+                    this.insert(item);
+                }
+            }
+            if (this.logger) {
+                blumeaLogger('scalable', `Bloom filter was scaled by a factor ${this.scalingFactor}`);
+            }
+        } catch (error) {
+            if (this.logger) {
+                blumeaLogger('scalable', null, `Error with scaleFilter(): ${error.message}`);
+            } else {
+                warn(error.message);
+            }
+        }
     }
 }
 
