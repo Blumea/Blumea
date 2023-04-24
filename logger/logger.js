@@ -23,14 +23,14 @@ const blumeaLogger = (type = null, message = null, error = null) => {
     }
 
     if (!message) {
-        warn(chalk.yellowBright.bold('[*] blumea-logger: Invalid log message provided'));
+        warn(chalk.blackBright.bold('[*] blumea-logger: Invalid log message provided'));
     } else {
         log('[type: ' + chalk.hex(logConfig.types[type].color).bold(logConfig.types[type].name) + ', log: ' + chalk.hex(logConfig.types[type].color).bold(message.toString()) + ']');
     }
 }
 
 const displayLoggerDetails = () => {
-    log('\n' + chalk.greenBright.bold(`[*] Using Blumea v${version} with the app.`))
+    log('\n' + chalk.blackBright.bold(`[*] Using Blumea v${version} with the app.`));
 }
 
 const displayLogActive = () => {
@@ -49,8 +49,8 @@ const displayLogInactive = () => {
         return;
     } else {
         logInactiveDisplayed = true;
-        log(styles`${styles.bold}${styles.blackBright}[*] Blumea Logger is disabled...${styles.x}${styles.x}`)
-        log(styles`${styles.bold}${styles.blackBright}[*] Use ${styles.cyanBright}-l or -log or -blumea ${styles.x}${styles.blackBright}flag to activate blumea logger.${styles.x}${styles.x}${styles.x}`)
+        log(chalk.blackBright.bold('[*] Blumea Logger is disabled...'));
+        log(chalk.blackBright.bold('[*] Use ') + chalk.cyan.bold('-l or -log or -blumea') + chalk.blackBright.bold(' flag to activate blumea logger.'));
     }
 }
 

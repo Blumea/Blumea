@@ -120,4 +120,4 @@ class CuckooBloomFilter {
 /*******************
  *  © Blumea | 2023
  * *****************/
- module.exports = CuckooBloomFilter;
+module.exports = CuckooBloomFilter;
