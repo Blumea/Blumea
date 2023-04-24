@@ -7,7 +7,6 @@ const flags = process.argv
 const { log, warn } = require('console')
 const { logConfig } = require('./config');
 const chalk = require('chalk');
-const styles = require('terminal-styles')
 const { version } = require('../package.json')
 
 let logActiveDisplayed = false;
