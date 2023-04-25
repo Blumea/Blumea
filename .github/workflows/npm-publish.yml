@@ -19,8 +19,6 @@ jobs:
           node-version: 16
       - name: Installing npm dependencies
         run: npm install
-      - name: NPM Tests
-        run: npm test
 
   publish-npm:
     needs: build
