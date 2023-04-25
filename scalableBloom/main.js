@@ -30,6 +30,10 @@ class ScalableBloomFilter {
             this.filter = new Uint8Array(this.filterSize);
             this.itemCount = 0;
             this.scalingFactor = 2;
+
+            if (this.logger) {
+                blumeaLogger('scalable', 'ScalableBloomFilter instance created.')
+            }
         } catch (error) {
             if (this.logger) {
                 blumeaLogger('scalable', null, `Error with constructor(): ${error.message}`)
@@ -51,7 +55,11 @@ class ScalableBloomFilter {
             }
             return filterSize;
         } catch (error) {
-            console.error(error.message);
+            if (this.logger) {
+                blumeaLogger('scalable', null, `Error with getFilterSize(): ${error.message}`)
+            } else {
+                warn(error.message);
+            }
         }
     }
 
@@ -62,7 +70,7 @@ class ScalableBloomFilter {
             }
         } catch (error) {
             if (this.logger) {
-                blumeaLogger('scalable', null, `Error occured: ${error.message}`)
+                blumeaLogger('scalable', null, `Error with generator func(): ${error.message}`)
             } else {
                 warn(error.message);
             }
@@ -155,5 +163,7 @@ class ScalableBloomFilter {
     }
 }
 
-
+/*******************
+ *  © Blumea | 2023
+ * *****************/
 module.exports = ScalableBloomFilter;
