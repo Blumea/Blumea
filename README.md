@@ -199,7 +199,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
      * Provide item count and an acceptable false positive rate.
      */ 
 
-    let filter = new PartitionedBloomFilter(5999, 0.03);
+    let filter = new PartitionedBloomFilter(5999, 0.03, 2);
   ```
 #### **Methods:**
 * **insert(element)** : This function inserts a new element into the bloom filter by setting the appropriate bits in each partition's bit set based on the hash values of the element.
@@ -242,7 +242,58 @@ To import the BloomFilter class from the Blumea package into your project, use t
     console.log(pbf.getHashCountPerPartition())
 ```
 ---
-### 4. 🔖**Scalable Bloom Filter**
+### 4. 🔖**Cuckoo Bloom Filter**
+
+#### **About**
+A cuckoo bloom filter is a variation of a Bloom filter, which is a probabilistic data structure used for efficient set membership testing. Like a Bloom filter, a cuckoo bloom filter represents a set of items as a bit array, but it uses two hash functions and two hash tables instead of one.
+Cuckoo bloom filters offer better performance than standard Bloom filters for some use cases, but they are more complex to implement and require more memory. They are commonly used in network routers, firewalls, and other applications where fast and efficient set membership testing is required.
+#### **How to import?**
+To import the BloomFilter class from the Blumea package into your project, use the following:
+  ```javascript
+    const { CuckooBloomFilter } = require('blumea');
+
+    /**
+     * Create a Bloom filter instance for your app.
+     * Provide item count and an acceptable false positive rate.
+     */ 
+
+    let filter = new CuckooBloomFilter(2999, 0.01);
+  ```
+#### **Methods:**
+* **insert(element)** : : This function inserts the given element into the filter. It hashes the element using multiple hash functions and tries to place it in one of the two tables. If both tables have already occupied the slots, it performs cuckoo hashing by swapping the current element with the existing one and trying to insert the swapped element. If cuckoo hashing fails after a certain number of attempts, the function returns false. If the element is successfully inserted, the function returns true.
+
+* **find(element)** : This function checks if the given element exists in the filter. It hashes the element using the same hash functions used during insertion and checks if the corresponding slots in either table contain the element. If the element is found, the function returns true. If the element is not found, the function returns false.
+
+* **Utility Methods:**
+  * **getHashCount()** or **filter.hash_count**
+  * **getSize()** or **filter.size**
+
+#### ❗Usage Warning:
+- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
+
+- The valid range for false positive rates is between 0.001 and 0.999.
+
+**Sample Node app with Cuckoo Bloom Filter**:
+  ```javascript
+    const { CuckooBloomFilter } = require('blumea')
+
+    // Create a new Cuckoo Bloom Filter with 100 items, 0.05 false positive rate.
+    const cf = new CuckooBloomFilter(100, 0.05)
+
+    // Insert some elements
+    cf.insert('apple')
+    cf.insert('banana')
+    cf.insert('strawberry')
+
+    // Check if an element exists in the filter
+    console.log(cf.contains('banana')) // Returns true
+    console.log(cf.contains('mango')) // Returns false
+
+    // Check the number of hash functions used in the filer
+    console.log(cf.getHashCount())
+```
+---
+### 5. 🔖**Scalable Bloom Filter**
 #### **About**
 A Scalable Bloom Filter is a type of Bloom Filter that is designed to be scalable, meaning it can handle an arbitrary number of items and can dynamically adjust its size based on the number of items being inserted. It is a probabilistic data structure that works by using multiple hash functions to generate a set of bit positions in a bit array, where a 1 indicates that the item is likely present and a 0 indicates that the item is definitely not present.
 Scalable Bloom Filters are useful in a variety of real-life applications, such as:
