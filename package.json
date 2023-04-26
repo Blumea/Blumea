@@ -19,7 +19,16 @@
     "Blumea",
     "bloom-filter"
   ],
-  "author": "akash.c1500@gmail.com",
+  "authors": [
+    {
+      "name": "Akash Chouhan",
+      "email": "akash.c1500@gmail.com"
+    },
+    {
+      "name": "Taranpreet Singh Chabbra",
+      "email": "singhh3010@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Blumea/Blumea/issues",
