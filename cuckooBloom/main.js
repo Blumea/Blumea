@@ -33,7 +33,13 @@ class CuckooBloomFilter {
                 blumeaLogger('cuckoo', null, 'Invalid false positive rate, updated to: 0.01.');
             }
         }
-
+        // Prevent invalid hash count values
+        if (hash_count <= 0) {
+            hash_count = 1;
+            if (this.logger) {
+                blumeaLogger('cuckoo', null, 'Invalid number of hash functions, updated to: 1.');
+            }
+        }
         this.items_count = Number(items_count);
         this.false_positive = Number(false_positive);
         this.size = this.getSize(this.items_count, this.false_positive);
@@ -101,7 +107,11 @@ class CuckooBloomFilter {
                 return false;
             }
         } catch (err) {
-            console.error(`Error inserting ${element}: ${err}`);
+            if (this.logger) {
+                blumeaLogger('cuckoo', null, `Error with insert(): ${err.message}`);
+            } else {
+                warn(err.message);
+            }
             return false;
         }
     }
@@ -109,9 +119,16 @@ class CuckooBloomFilter {
         try {
             let index1 = murmurhash.v3(element) % this.size;
             let index2 = murmurhash.v3(element, 1) % this.size;
+            if (this.logger) {
+                blumeaLogger('cuckoo', `${element} found in the filter.`);
+            }
             return this.table1[index1] == element || this.table2[index2] == element;
         } catch (err) {
-            console.error(`Error finding ${element}: ${err}`);
+            if (this.logger) {
+                blumeaLogger('cuckoo', null, `Error with find(): ${err.message}`);
+            } else {
+                warn(err.message);
+            }
             return false;
         }
     }
@@ -120,4 +137,4 @@ class CuckooBloomFilter {
 /*******************
  *  © Blumea | 2023
  * *****************/
- module.exports = CuckooBloomFilter;
+module.exports = CuckooBloomFilter;
