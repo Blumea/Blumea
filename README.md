@@ -91,7 +91,7 @@ By passing the desired item count and false positive rate as arguments to the Bl
 
   > **Note:** updateX methods() are experimental. Classical Bloom filters have static false positive rate and item count for a single instance.
 
-* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
+* Refer **[Note](https://github.com/blumea/blumea#note)** for more.
 
 **Sample Code Snipet**:
   ```javascript
@@ -151,7 +151,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
   * **getHashFunctionCount()** or **filter.hash_count**
   * **getBitArraySize()** or **filter.size**
 
-* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
+* Refer **[Note](https://github.com/blumea/blumea#note)** for more.
 
 **Sample Node app with Counting Bloom Filter**:
   ```javascript
@@ -221,7 +221,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
   * **getHashCount()** or **filter.hash_count**
   * **getSize()** or **filter.size**
 
-* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
+* Refer **[Note](https://github.com/blumea/blumea#note)** for more.
 
 **Sample Node app with Partition Bloom Filter**:
   ```javascript
@@ -268,7 +268,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
   * **getHashCount()** or **filter.hash_count**
   * **getSize()** or **filter.size**
 
-* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
+* Refer **[Note](https://github.com/blumea/blumea#note)** for more.
 
 **Sample Node app with Cuckoo Bloom Filter**:
   ```javascript
@@ -330,7 +330,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
       hashingFunction: ((str: string, seed?: number | undefined) => number)
       ```
 
-* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
+* Refer **[Note](https://github.com/blumea/blumea#note)** for more.
 
 **Sample app to add Todos with a Scalable Bloom**:
   ```javascript
