@@ -91,28 +91,35 @@ By passing the desired item count and false positive rate as arguments to the Bl
 
   > **Note:** updateX methods() are experimental. Classical Bloom filters have static false positive rate and item count for a single instance.
 
-#### ❗Usage Warning:
-- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
-
-- The valid range for false positive rates is between 0.001 and 0.999.
+* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
 
 **Sample Code Snipet**:
   ```javascript
-    const {BloomFilter} = require('blumea')
-    let filter = new BloomFilter(20,0.03)
+    const { BloomFilter } = require('blumea')
+    const { log } = require('log')
+    let filter = new BloomFilter(1024, 0.01)
 
 
     filter.insert('James Clear')
     filter.insert('Paulo Coelho')
 
-    console.log(filter.find('blumea')) //return false.
-    console.log(filter.find('Paulo Coelho')) //return true.
+    log(filter.find('blumea')) // return false.
+    log(filter.find('Paulo Coelho')) // return true.
 
-    console.log(filter.getHashFunctionCount()) //return the optimal hash func count.
+    log(filter.getHashFunctionCount()) //return the optimal hash func count.
 
-    filter.updateFalsePositiveRate(0.0) //warning thrown and filter will update the rate to 0.01.
-    filter.updateItemCount(50) //updates the item count & recompute parameters.
-    console.log(filter.getHashFunctionCount()) //return the new optimal hash func count.
+    //Experimental:
+    const fpRate = 0.0;
+    const itemCount = 4096;
+
+    // throws warning & filter updates fp rate to 0.01.
+    filter.updateFalsePositiveRate(fpRate); 
+
+    // itemCount updated, instance refreshes other parameters.
+    filter.updateItemCount(itemCount)
+
+    // return the new optimal count.
+    log(filter.getHashFunctionCount()) 
   ```
 ---
 
@@ -144,11 +151,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
   * **getHashFunctionCount()** or **filter.hash_count**
   * **getBitArraySize()** or **filter.size**
 
-
-#### ❗Usage Warning:
-- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
-
-- The valid range for false positive rates is between 0.001 and 0.999.
+* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
 
 **Sample Node app with Counting Bloom Filter**:
   ```javascript
@@ -218,10 +221,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
   * **getHashCount()** or **filter.hash_count**
   * **getSize()** or **filter.size**
 
-#### ❗Usage Warning:
-- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
-
-- The valid range for false positive rates is between 0.001 and 0.999.
+* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
 
 **Sample Node app with Partition Bloom Filter**:
   ```javascript
@@ -268,10 +268,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
   * **getHashCount()** or **filter.hash_count**
   * **getSize()** or **filter.size**
 
-#### ❗Usage Warning:
-- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
-
-- The valid range for false positive rates is between 0.001 and 0.999.
+* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
 
 **Sample Node app with Cuckoo Bloom Filter**:
   ```javascript
@@ -295,12 +292,11 @@ To import the BloomFilter class from the Blumea package into your project, use t
 ---
 ### 5. 🔖**Scalable Bloom Filter**
 #### **About**
-A Scalable Bloom Filter is a type of Bloom Filter that is designed to be scalable, meaning it can handle an arbitrary number of items and can dynamically adjust its size based on the number of items being inserted. It is a probabilistic data structure that works by using multiple hash functions to generate a set of bit positions in a bit array, where a 1 indicates that the item is likely present and a 0 indicates that the item is definitely not present.
-Scalable Bloom Filters are useful in a variety of real-life applications, such as:
+Scalable Bloom Filters are designed to be scalable and can handle an arbitrary number of items and adjust size dynamically while using multiple hash functions to generate a set of bits to identify the item's presence. They have real-life applications such as:
 
-- Web Cache Optimization: improving web caching system performance by quickly determining whether a requested web page is present in the cache.
-- Distributed Systems: reducing network traffic in distributed systems by determining which nodes contain a particular item without having to query each node individually.
-- Database Indexing: speeding up database queries by providing a quick filter to determine if a record is not present in a table, and as an index in a database to help with range queries.
+- **Web Cache Optimization**: Quickly determine whether a requested web page is present in the cache.
+- **Distributed Systems**: Reducing distributed network traffic by identifying specific nodes without querying each one individually to find an item.
+- **Database Indexing**: Accelerating database queries by using it as an index to facilitate range queries and swiftly filtering if a record is absent from a table.
 
 #### **How to import?**
 To import the BloomFilter class from the Blumea package into your project, use the following:
@@ -334,12 +330,9 @@ To import the BloomFilter class from the Blumea package into your project, use t
       hashingFunction: ((str: string, seed?: number | undefined) => number)
       ```
 
-#### ❗Usage Warning:
-- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
+* Refer **[Note](https://github.com/blumea/blumea#-note)** for more.
 
-- The valid range for false positive rates is between 0.01 and 0.999.
-
-**Sample TODO app with Scalable Bloom Filter**:
+**Sample app to add Todos with a Scalable Bloom**:
   ```javascript
     
     const { ScalableBloomFilter } = require('blumea'),
@@ -381,6 +374,14 @@ To import the BloomFilter class from the Blumea package into your project, use t
 
   ```
 ---
+
+## ❗Note
+- Please note that the false positive rate in a Bloom filter should not exceed 0.999. If this value is exceeded, an exception will be thrown.
+
+- The valid range for false positive rates is between **0.01** and **0.999**.
+
+---
+
 ## 🚧 Support Details
 
 * Node.js: v7.0.0 or higher
@@ -392,8 +393,11 @@ To import the BloomFilter class from the Blumea package into your project, use t
 ## 📦 Application Details
 
 ### License
-**[MIT License](https://github.com/Blumea/Blumea-npm-package/blob/main/LICENSE "View License")**
-### Author
-**[Github.com/Blumea](https://github.com/Blumea "Open Github Organization")**
+**[MIT License](https://github.com/Blumea/Blumea-npm-package/blob/main/LICENSE "View License")** - **[Github.com/Blumea](https://github.com/Blumea "Open Github Organization")**
+
 ### Maintainer
 **[Akash Chouhan](https://github.com/akashchouhan16 "akashchouhan16")**
+### Author(s)
+- **[Akash Chouhan](https://github.com/akashchouhan16 "akashchouhan16")**
+- **[Taranpreet Singh Chabbra](https://github.com/singhtaran1005 "singhtaran1005")**
+
