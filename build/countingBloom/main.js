@@ -4,13 +4,13 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const { isLogsActive, blumeaLogger } = require('../logger/logger')
-const { log, warn } = require('console')
+const { isLogsActive, blumeaLogger } = require('../../logger/logger')
+const { warn } = require('console')
 
 
-class BloomFilter {
 
-    // Classical Bloom Formulae, Utility methods.
+class CountingBloomFilter {
+
     getSize() {
         let m = -(this.items_count * Math.log(this.false_positive)) / (Math.log(2) ** 2)
         return Math.ceil(m);
@@ -28,28 +28,32 @@ class BloomFilter {
         if (!items_count || Number(items_count) > 7_000_000 || items_count <= 0) {
             items_count = 10000; //set to lowest safe permitted value.
             if (this.logger) {
-                blumeaLogger('classical', null, 'Invalid Item count. Updated to: 10000.');
+                blumeaLogger('counting', null, 'Invalid item count, updated to: 10000.');
             }
         }
 
         // Prevent invalid false positive rate:
-        if (false_positive >= 0.999 || false_positive < 0.01) {
+        if (!false_positive || false_positive >= 0.999 || false_positive < 0.01) {
             false_positive = 0.01;
-            if (this.logger)
-                blumeaLogger('classical', null, 'Invalid false positive rate. Updated to: 0.01.');
+            if (this.logger) {
+                blumeaLogger('counting', null, 'Invalid False positive rate. Updated to: 0.01.')
+            }
         }
 
         this.items_count = items_count;
         this.false_positive = false_positive;
-        this.size = this.getSize()
-        this.hash_count = this.getHashCount()
-        this.bit_set = []
+        this.size = this.getSize();
+        this.hash_count = this.getHashCount();
+        this.bit_set = [] //Array of Object
 
         for (let i = 0; i < this.size; i++)
-            this.bit_set[i] = 0
+            this.bit_set[i] = {
+                count_bit: 0, //count bit for specific element
+                values: []
+            }
 
         if (this.logger) {
-            blumeaLogger('classical', 'ClassicalBloomFilter instance created.');
+            blumeaLogger('counting', 'CountingBloomFilter instance created.');
         }
     }
 
@@ -62,19 +66,22 @@ class BloomFilter {
             if (typeof element !== 'string') {
                 element = element.toString();
             }
+
+            let element_count = 0;
             let digests = []
             for (let i = 0; i < this.hash_count; ++i) {
-                let index = murmurhash.v3(element, i) % this.size
-                digests.push(index)
-                this.bit_set[index] = 1;
+                let index = murmurhash.v3(`${element}`, i) % this.size;
+                digests.push(index);
+                this.bit_set[index].count_bit += 1; //count bit
+                this.bit_set[index].values.push(element);
+                element_count = this.bit_set[index].count_bit;
             }
             if (this.logger) {
-                blumeaLogger('classical', `${element} added to the filter.`);
+                blumeaLogger('counting', `${element} added to the filter, Count: ${element_count}`);
             }
-
         } catch (e) {
             if (this.logger) {
-                blumeaLogger('classical', null, 'Error with insert().')
+                blumeaLogger('counting', null, 'Error with insert().');
                 warn(e.message);
             }
         }
@@ -88,39 +95,43 @@ class BloomFilter {
             if (typeof element !== 'string') {
                 element = element.toString();
             }
+
             for (let i = 0; i < this.hash_count; i++) {
-                let index = Math.ceil(murmurhash.v3(element, i) % this.size)
-                if (this.bit_set[index] == 0) {
+                const index = Math.ceil(murmurhash.v3(element, i) % this.size);
+                if (!this.bit_set[index] || !this.bit_set[index].hasOwnProperty('count_bit') || this.bit_set[index].count_bit === 0) {
                     if (this.logger) {
-                        blumeaLogger('classical', `${element} does not exist.`);
+                        blumeaLogger('counting', `${element} does not exist.`);
                     }
-                    return false
+                    return false;
                 }
             }
-            if (this.logger) {
-                blumeaLogger('classical', `${element} exists.`);
-            }
 
+            if (this.logger) {
+                blumeaLogger('counting', `${element} exists.`);
+            }
         } catch (e) {
             if (this.logger) {
-                blumeaLogger('classical', null, 'Error with find().');
+                blumeaLogger('counting', null, 'Error with find().');
                 warn(e.message);
             }
             return false;
         }
-        return true
+        return true;
     }
+
 
     // secondary utility methods to access or update the bloom filter parameters.
     updateItemCount(newItemCount) {
+        if (typeof newItemCount !== 'Number') {
+            newItemCount = Number(newItemCount);
+        }
         // Prevent invalid item_count:
         if (!newItemCount || Number(newItemCount) > 7_000_000 || newItemCount <= 0) {
             newItemCount = 10000;
             if (this.logger) {
-                blumeaLogger('classical', null, 'Invalid new item count, updated to: 10000')
+                blumeaLogger('counting', null, 'Invalid Item count, updated to: 10000');
             }
         }
-
         this.items_count = newItemCount
         this.size = this.getSize(this.item_count, this.false_positive)
         this.hash_count = this.getHashCount(this.size, this.items_count)
@@ -129,14 +140,14 @@ class BloomFilter {
         for (let i = 0; i < this.size; i++)
             this.bit_set[i] = 0
         if (this.logger) {
-            blumeaLogger('classical', `Item count updated to ${this.items_count}`);
+            blumeaLogger('counting', `Item Count updated to: ${this.items_count}`);
         }
     }
 
     updateFalsePositiveRate(newFalsePostive) {
-        if (newFalsePostive < 0.01 || newFalsePostive > 0.999) {
+        if (!newFalsePostive || newFalsePostive <= 0.0 || newFalsePostive >= 0.999) {
             if (this.logger) {
-                blumeaLogger('classical', null, 'Invalid false positive rate, updated to: 0.01')
+                blumeaLogger('counting', null, 'Invalid false positive rate, updated to: 0.01.');
             }
             newFalsePostive = 0.01;
         }
@@ -148,7 +159,7 @@ class BloomFilter {
         for (let i = 0; i < this.size; i++)
             this.bit_set[i] = 0
         if (this.logger) {
-            blumeaLogger('classical', `False positive rate updated to ${this.false_positive}`);
+            blumeaLogger('counting', `False positive rate updated to: ${this.false_positive}`);
         }
     }
 
@@ -163,4 +174,4 @@ class BloomFilter {
 /*******************
  *  © Blumea | 2023
  * *****************/
-module.exports = BloomFilter
+module.exports = CountingBloomFilter;
