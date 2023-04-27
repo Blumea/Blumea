@@ -79,10 +79,11 @@ class CountingBloomFilter {
             if (this.logger) {
                 blumeaLogger('counting', `${element} added to the filter, Count: ${element_count}`);
             }
-        } catch (e) {
+        } catch (error) {
             if (this.logger) {
-                blumeaLogger('counting', null, 'Error with insert().');
-                warn(e.message);
+                blumeaLogger('counting', null, `Error with insert(): ${error.message}`)
+            } else {
+                warn(error.message);
             }
         }
     }
@@ -109,10 +110,11 @@ class CountingBloomFilter {
             if (this.logger) {
                 blumeaLogger('counting', `${element} exists.`);
             }
-        } catch (e) {
+        } catch (error) {
             if (this.logger) {
-                blumeaLogger('counting', null, 'Error with find().');
-                warn(e.message);
+                blumeaLogger('counting', null, `Error with find(): ${error.message}`)
+            } else {
+                warn(error.message);
             }
             return false;
         }
@@ -120,9 +122,9 @@ class CountingBloomFilter {
     }
 
 
-    // secondary utility methods to access or update the bloom filter parameters.
-    updateItemCount(newItemCount) {
-        if (typeof newItemCount !== 'Number') {
+    // Discarded
+    #updateItemCount(newItemCount) {
+        if (typeof newItemCount !== 'number') {
             newItemCount = Number(newItemCount);
         }
         // Prevent invalid item_count:
@@ -133,8 +135,8 @@ class CountingBloomFilter {
             }
         }
         this.items_count = newItemCount
-        this.size = this.getSize(this.item_count, this.false_positive)
-        this.hash_count = this.getHashCount(this.size, this.items_count)
+        this.size = this.getSize()
+        this.hash_count = this.getHashCount()
         this.bit_set = []
 
         for (let i = 0; i < this.size; i++)
@@ -144,7 +146,7 @@ class CountingBloomFilter {
         }
     }
 
-    updateFalsePositiveRate(newFalsePostive) {
+    #updateFalsePositiveRate(newFalsePostive) {
         if (!newFalsePostive || newFalsePostive <= 0.0 || newFalsePostive >= 0.999) {
             if (this.logger) {
                 blumeaLogger('counting', null, 'Invalid false positive rate, updated to: 0.01.');
@@ -152,8 +154,8 @@ class CountingBloomFilter {
             newFalsePostive = 0.01;
         }
         this.false_positive = newFalsePostive;
-        this.size = this.getSize(this.item_count, this.false_positive)
-        this.hash_count = this.getHashCount(this.size, this.items_count)
+        this.size = this.getSize()
+        this.hash_count = this.getHashCount()
         this.bit_set = []
 
         for (let i = 0; i < this.size; i++)
