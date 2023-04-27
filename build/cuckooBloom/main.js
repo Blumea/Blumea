@@ -4,7 +4,7 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const { isLogsActive, blumeaLogger } = require('../logger/logger')
+const { isLogsActive, blumeaLogger } = require('../../logger/logger')
 
 class CuckooBloomFilter {
     // Utility methods.
