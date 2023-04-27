@@ -146,6 +146,7 @@ To import the BloomFilter class from the Blumea package into your project, use t
 * **find(element)**: To check for element membership with the false positive rate of the **filter**.
 <!-- * **updateFalsePositiveRate(newFalsePostive)**: To update the filter instance with a new false positive rate.
 * **updateItemCount(newItemCount)**: To update the filter instance with a new item count. -->
+* **getCount(element)**: To check for element membership and extract it's count. It returns the **count** if the element is found, `0` otherwise.
 
 * **Utility Methods:**
   * **getHashFunctionCount()** or **filter.hash_count**
@@ -153,39 +154,36 @@ To import the BloomFilter class from the Blumea package into your project, use t
 
 * Refer **[Note](https://github.com/blumea/blumea#note)** for more.
 
-**Sample Node app with Counting Bloom Filter**:
+**Sample Code Snippet for Counting Bloom**:
   ```javascript
-    const express = require('express')
-    const { CountingBloomFilter } = require('blumea'),
+    const { CountingBloomFilter } = require('blumea');
+    const express = require('express');
     const app = express();
-    
-    // Initialize counting bloom filter
-    const filter = new CountingBloomFilter(5999, 0.03);
-    
-    // Route to check for username availability
-    app.post('/check-username', (req,res)=>{
-        try {
-            const username = req.body.username;
-            if(!username) {
-              // Handle invalid input case
-            } else {
-              /**
-               * Check if username is available using filter.
-               * Saves network bandwidth on db queries.
-               * */
-    
-              if(filter.find(username))
-                res.send(`${username} already in use.`)
-              else
-                res.send(`${username} is available.`)
-            }
-        } catch (e) {
-          // Handle errors
-        }
-    })
-    
-    app.listen(3000, ()=> {console.log (`Server live on PORT: ${3000}`);})
 
+    let filter = new CountingBloomFilter(1000, 0.01);
+
+    app.post('/login', async (req, res) => {
+      try {
+        const { username, password } = req.body;
+        // Save NT bandwidth on db queries to validate username.
+        if (!filter.find(username)) {
+          // handle invalid username case
+        } 
+
+        //Some Logic to verify credentials.
+        await processLogin({username, password});
+
+        // save count with bloom filter.
+        filter(username, filter.getCount(username) + 1);
+
+        // Or simply use the insert method.
+        filter.insert(username);
+
+      } catch (error) {
+        // handle error
+      }
+    })
+    // ...code
   ```
 ---
 ### 3. 🔖**Partitioned Bloom Filter**
