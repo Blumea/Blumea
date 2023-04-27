@@ -4,7 +4,7 @@
  * *****************************************
 */
 
-const { isLogsActive, blumeaLogger } = require('../logger/logger')
+const { isLogsActive, blumeaLogger } = require('../../logger/logger')
 const { warn } = require('console')
 const murmurhash = require('murmurhash-js');
 

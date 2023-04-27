@@ -1,6 +1,6 @@
 {
   "name": "blumea",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Blumea is a streamlined Bloom filter npm package for your node apps.",
   "main": "index.js",
   "scripts": {
