@@ -57,14 +57,20 @@ class CountingBloomFilter {
         }
     }
 
-    // Primary Method definitions:
-    insert(element) {
+    /**
+    * Inserts an element into the filter.
+    * @param {string} element - The element to insert.
+    */
+    insert(element, count = 0) {
         try {
             if (!element) {
-                throw new Error('Invalid input element (' + element + ')')
+                throw new Error(`Invalid input element (${element})`)
             }
             if (typeof element !== 'string') {
                 element = element.toString();
+            }
+            if (count && typeof count !== 'number') {
+                throw new Error(`Invalid element's initial count (${element})`)
             }
 
             let element_count = 0;
@@ -72,9 +78,17 @@ class CountingBloomFilter {
             for (let i = 0; i < this.hash_count; ++i) {
                 let index = murmurhash.v3(`${element}`, i) % this.size;
                 digests.push(index);
-                this.bit_set[index].count_bit += 1; //count bit
+
+                if (count && count > 1) {
+                    this.bit_set[index].count_bit = count;
+                    element_count = count;
+                } else {
+                    this.bit_set[index].count_bit += 1;
+                    element_count = this.bit_set[index].count_bit;
+                }
+
                 this.bit_set[index].values.push(element);
-                element_count = this.bit_set[index].count_bit;
+
             }
             if (this.logger) {
                 blumeaLogger('counting', `${element} added to the filter, Count: ${element_count}`);
@@ -88,6 +102,11 @@ class CountingBloomFilter {
         }
     }
 
+    /**
+    * Checks whether an element is in the filter.
+    * @param {string} element - The element to search for.
+    * @returns {boolean} - True if the element is in the filter, false otherwise.
+    */
     find(element) {
         try {
             if (!element) {
@@ -121,6 +140,46 @@ class CountingBloomFilter {
         return true;
     }
 
+    /**
+    * Checks whether an element is in the filter and extracts count.
+    * @param {string} element - The element to search for.
+    * @returns {number} - count if the element is in the filter, 0 otherwise.
+    */
+    getCount(element) {
+        try {
+            if (!element) {
+                throw new Error('Invalid input element (' + element + ')')
+            }
+            if (typeof element !== 'string') {
+                element = element.toString();
+            }
+
+            let count = 0;
+            for (let i = 0; i < this.hash_count; i++) {
+                const index = Math.ceil(murmurhash.v3(element, i) % this.size);
+                if (!this.bit_set[index] || !this.bit_set[index].hasOwnProperty('count_bit') || this.bit_set[index].count_bit === 0) {
+                    if (this.logger) {
+                        blumeaLogger('counting', `${element} does not exist.`);
+                    }
+                    return 0;
+                } else {
+                    count = this.bit_set[index].count_bit;
+                }
+            }
+
+            if (this.logger) {
+                blumeaLogger('counting', `${element} exists with Count: ${count}.`);
+            }
+            return count;
+        } catch (error) {
+            if (this.logger) {
+                blumeaLogger('counting', null, `Error with getCount(): ${error.message}.`)
+            } else {
+                warn(error.message);
+            }
+            return 0;
+        }
+    }
 
     // Discarded
     #updateItemCount(newItemCount) {
