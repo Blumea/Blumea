@@ -141,11 +141,11 @@ To import the BloomFilter class from the Blumea package into your project, use t
   ```
 #### **Methods:**
 * **insert(element)** : To add the element to the bloom filter instance.
-    > When an element is added to the Counting Bloom Filter with a single bit count, the filter increments the count of that element every time it is added. This count is maintained in the `count_bit` array for each element in the filter.
+  - When an element is added to the Counting Bloom Filter with a single bit count, the filter increments the count of that element every time it is added. This count is maintained in the `count_bit` array for each element in the filter.
 
 * **find(element)**: To check for element membership with the false positive rate of the **filter**.
-* **updateFalsePositiveRate(newFalsePostive)**: To update the filter instance with a new false positive rate.
-* **updateItemCount(newItemCount)**: To update the filter instance with a new item count.
+<!-- * **updateFalsePositiveRate(newFalsePostive)**: To update the filter instance with a new false positive rate.
+* **updateItemCount(newItemCount)**: To update the filter instance with a new item count. -->
 
 * **Utility Methods:**
   * **getHashFunctionCount()** or **filter.hash_count**
