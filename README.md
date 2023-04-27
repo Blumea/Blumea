@@ -260,9 +260,9 @@ To import the BloomFilter class from the Blumea package into your project, use t
     let filter = new CuckooBloomFilter(2999, 0.01);
   ```
 #### **Methods:**
-* **insert(element)** : : This function inserts the given element into the filter. It hashes the element using multiple hash functions and tries to place it in one of the two tables. If both tables have already occupied the slots, it performs cuckoo hashing by swapping the current element with the existing one and trying to insert the swapped element. If cuckoo hashing fails after a certain number of attempts, the function returns false. If the element is successfully inserted, the function returns true.
+* **insert(element)** : : This function inserts the element into the filter by hashing it with multiple hash functions and placing it into one of two tables. If both tables are full, it attempts cuckoo hashing by swapping the current element with an existing one. If the element can't be inserted after a certain number of attempts, it returns false. Successful insertion returns true.
 
-* **find(element)** : This function checks if the given element exists in the filter. It hashes the element using the same hash functions used during insertion and checks if the corresponding slots in either table contain the element. If the element is found, the function returns true. If the element is not found, the function returns false.
+* **find(element)** : This function checks if an element exists in the filter by hashing it with the same functions used during insertion and checking the corresponding slots in either table. If the element is found, it returns true. If not, it returns false.
 
 * **Utility Methods:**
   * **getHashCount()** or **filter.hash_count**
