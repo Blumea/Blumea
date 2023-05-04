@@ -4,8 +4,8 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const { isLogsActive, blumeaLogger } = require('../../logger/logger')
-
+const { metadata, blumeaLogger } = require('../../logger/logger')
+const { warn } = require('console')
 class CuckooBloomFilter {
     // Utility methods.
     getSize() {
@@ -18,7 +18,7 @@ class CuckooBloomFilter {
     }
     // Cuckoo Bloom filter instance initialization:
     constructor(items_count, false_positive) {
-        this.logger = isLogsActive();
+        this.logger = metadata.flags.debugActiveMode;
         // Prevent invalid item_count:
         if (!items_count || Number(items_count) > 7_000_000 || items_count <= 0) {
             items_count = 10000; //set to lowest safe permitted value.
@@ -31,13 +31,6 @@ class CuckooBloomFilter {
             false_positive = 0.01;
             if (this.logger) {
                 blumeaLogger('cuckoo', null, 'Invalid false positive rate, updated to: 0.01.');
-            }
-        }
-        // Prevent invalid hash count values
-        if (hash_count <= 0) {
-            hash_count = 1;
-            if (this.logger) {
-                blumeaLogger('cuckoo', null, 'Invalid number of hash functions, updated to: 1.');
             }
         }
         this.items_count = Number(items_count);

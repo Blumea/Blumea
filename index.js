@@ -4,7 +4,7 @@
  * *****************************************
 */
 
-require('./logger/logger').displayLoggerDetails();
+require('./logger/logger').initialize();
 
 
 const BloomFilter = require('./build/classicalBloom/main')

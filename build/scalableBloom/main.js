@@ -4,14 +4,14 @@
  * *****************************************
 */
 
-const { isLogsActive, blumeaLogger } = require('../../logger/logger')
+const { metadata, blumeaLogger } = require('../../logger/logger')
 const { warn } = require('console')
 const murmurhash = require('murmurhash-js');
 
 class ScalableBloomFilter {
     constructor(expectedItems = 1000, falsePositiveRate = 0.01, hashingFunctions = [murmurhash.murmur3]) {
         try {
-            this.logger = isLogsActive();
+            this.logger = metadata.flags.debugActiveMode;
 
             if (!expectedItems || typeof expectedItems !== 'number' || expectedItems < 1) {
                 throw new Error('Expected items must be a positive number.');
