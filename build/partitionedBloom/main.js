@@ -4,7 +4,7 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const { isLogsActive, blumeaLogger } = require('../../logger/logger')
+const { metadata, blumeaLogger } = require('../../logger/logger')
 const { warn } = require('console')
 
 class PartitionedBloomFilter {
@@ -19,7 +19,7 @@ class PartitionedBloomFilter {
     }
     // Partitioned Bloom filter instance initialization:
     constructor(items_count, false_positive, partitions_count) {
-        this.logger = isLogsActive();
+        this.logger = metadata.flags.debugActiveMode;
 
         // Prevent invalid item_count:
         if (!items_count || Number(items_count) > 7_000_000 || items_count <= 0) {

@@ -4,7 +4,7 @@
  * *****************************************
 */
 const murmurhash = require('murmurhash')
-const { isLogsActive, blumeaLogger } = require('../../logger/logger')
+const { metadata, blumeaLogger } = require('../../logger/logger')
 const { warn } = require('console')
 class CuckooBloomFilter {
     // Utility methods.
@@ -18,7 +18,7 @@ class CuckooBloomFilter {
     }
     // Cuckoo Bloom filter instance initialization:
     constructor(items_count, false_positive) {
-        this.logger = isLogsActive();
+        this.logger = metadata.flags.debugActiveMode;
         // Prevent invalid item_count:
         if (!items_count || Number(items_count) > 7_000_000 || items_count <= 0) {
             items_count = 10000; //set to lowest safe permitted value.
