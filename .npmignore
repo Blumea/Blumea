@@ -5,4 +5,5 @@ assets/
 
 # Test directories or files
 Tests/
+test/
 *.test.*
