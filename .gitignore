@@ -7,7 +7,6 @@ jspm_packages/
 
 # Manual Testing dir
 Tests/
-*.test.*
 
 # Lock files
 *lock*
