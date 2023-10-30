@@ -1,10 +1,12 @@
 {
   "name": "blumea",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Blumea is a streamlined Bloom filter npm package for your node apps.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "lint": "eslint .  --ext .js",
+    "lint-fix": "eslint --fix .  --ext .js",
     "test/classical": "echo \"Manual tests on classical bloom..\" && cd Tests && node test-classical.js -log",
     "test/counting": "echo \"Manual tests on counting bloom..\" && cd Tests && node test-counting.js -log",
     "test/partitioned": "echo \"Manual tests on partitioned bloom..\" && cd Tests && node test-partitioned.js -log",
@@ -41,6 +43,8 @@
     "murmurhash-js": "^1.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-plugin-jest": "^27.6.0",
     "jest": "^29.5.0"
   }
 }
