@@ -5,5 +5,28 @@ assets/
 
 # Test directories or files
 Tests/
+bin/
 test/
 *.test.*
+
+# dist
+dist/
+
+# Node development modules
+node_modules
+npm-debug.log
+
+# Others 
+*.vscode/
+*.sublime*
+.editorconfig
+.DS_Store
+*.yml
+.git*
+
+*.png
+*.jpg
+*.jpeg
+*.svg
+/logo/
+/coverage/
