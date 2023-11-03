@@ -9,11 +9,11 @@ const BloomFilter = require('../build/classicalBloom/main');
 describe('Classical bloom filter tests', () => {
     let filter;
 
-    beforeEach(() => {
+    beforeAll(() => {
         filter = new BloomFilter(1000, 0.01);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         filter = null;
     });
 
@@ -47,11 +47,11 @@ describe('Classical bloom filter tests', () => {
     describe('Classical bloom instance with invalid inputs', () => {
         let filter_2;
 
-        beforeEach(() => {
+        beforeAll(() => {
             filter_2 = new BloomFilter(null, null);
         });
 
-        afterEach(() => {
+        afterAll(() => {
             filter_2 = null;
         });
 

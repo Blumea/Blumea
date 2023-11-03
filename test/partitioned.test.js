@@ -9,11 +9,11 @@ const PartitionedBloomFilter = require('../build/partitionedBloom/main');
 describe('Partitioned bloom filter tests', () => {
     let filter;
 
-    beforeEach(() => {
+    beforeAll(() => {
         filter = new PartitionedBloomFilter(1000, 0.01);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         filter = null;
     });
 
@@ -47,11 +47,11 @@ describe('Partitioned bloom filter tests', () => {
     describe('Partitioned bloom instance with invalid inputs', () => {
         let filter_2;
 
-        beforeEach(() => {
+        beforeAll(() => {
             filter_2 = new PartitionedBloomFilter(null, null);
         });
 
-        afterEach(() => {
+        afterAll(() => {
             filter_2 = null;
         });
 
