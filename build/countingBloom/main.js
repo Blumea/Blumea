@@ -118,7 +118,7 @@ class CountingBloomFilter {
 
             for (let i = 0; i < this.hash_count; i++) {
                 const index = Math.ceil(murmurhash.v3(element, i) % this.size);
-                if (!this.bit_set[index] || !this.bit_set[index].hasOwnProperty('count_bit') || this.bit_set[index].count_bit === 0) {
+                if (!this.bit_set[index] || this.bit_set[index].count_bit === 0) {
                     if (this.logger) {
                         blumeaLogger('counting', `${element} does not exist.`);
                     }
@@ -157,7 +157,7 @@ class CountingBloomFilter {
             let count = 0;
             for (let i = 0; i < this.hash_count; i++) {
                 const index = Math.ceil(murmurhash.v3(element, i) % this.size);
-                if (!this.bit_set[index] || !this.bit_set[index].hasOwnProperty('count_bit') || this.bit_set[index].count_bit === 0) {
+                if (!this.bit_set[index] || this.bit_set[index].count_bit === 0) {
                     if (this.logger) {
                         blumeaLogger('counting', `${element} does not exist.`);
                     }
