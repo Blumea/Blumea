@@ -9,11 +9,11 @@ const CountingBloomFilter = require('../build/countingBloom/main');
 describe('Counting bloom filter tests', () => {
     let filter;
 
-    beforeEach(() => {
+    beforeAll(() => {
         filter = new CountingBloomFilter(1000, 0.01);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         filter = null;
     });
 
@@ -47,11 +47,11 @@ describe('Counting bloom filter tests', () => {
     describe('Counting bloom instance with invalid inputs', () => {
         let filter_2;
 
-        beforeEach(() => {
+        beforeAll(() => {
             filter_2 = new CountingBloomFilter(null, null);
         });
 
-        afterEach(() => {
+        afterAll(() => {
             filter_2 = null;
         });
 

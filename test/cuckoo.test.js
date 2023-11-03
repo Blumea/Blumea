@@ -9,11 +9,11 @@ const CuckooBloomFilter = require('../build/cuckooBloom/main');
 describe('Cuckoo bloom filter tests', () => {
     let filter;
 
-    beforeEach(() => {
+    beforeAll(() => {
         filter = new CuckooBloomFilter(1000, 0.01);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         filter = null;
     });
 
@@ -47,11 +47,11 @@ describe('Cuckoo bloom filter tests', () => {
     describe('Cuckoo bloom instance with invalid inputs', () => {
         let filter_2;
 
-        beforeEach(() => {
+        beforeAll(() => {
             filter_2 = new CuckooBloomFilter(null, null);
         });
 
-        afterEach(() => {
+        afterAll(() => {
             filter_2 = null;
         });
 
