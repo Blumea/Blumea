@@ -8,9 +8,6 @@ jspm_packages/
 # Manual Testing dir
 Tests/
 
-# Lock files
-*lock*
-
 # Logs
 logs
 *.log
